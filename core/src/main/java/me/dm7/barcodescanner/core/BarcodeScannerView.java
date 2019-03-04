@@ -133,10 +133,10 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
 
                 if ((mode == Mode.DRAG && scale >= MIN_ZOOM) || mode == Mode.ZOOM) {
                     getParent().requestDisallowInterceptTouchEvent(true);
-                    float maxDx = child().getWidth() * (scale - 1);  // adjusted for zero pivot
-                    float maxDy = child().getHeight() * (scale - 1);  // adjusted for zero pivot
-                    dx = Math.min(Math.max(dx, -maxDx), 0);  // adjusted for zero pivot
-                    dy = Math.min(Math.max(dy, -maxDy), 0);  // adjusted for zero pivot
+                    float maxDx = child().getWidth() * (scale - 1);
+                    float maxDy = child().getHeight() * (scale - 1);
+                    dx = Math.min(Math.max(dx, -maxDx), 0);
+                    dy = Math.min(Math.max(dy, -maxDy), 0);
                     Log.i(TAG, "Width: " + child().getWidth() + ", scale " + scale + ", dx " + dx
                             + ", max " + maxDx);
                     applyScaleAndTranslation();
