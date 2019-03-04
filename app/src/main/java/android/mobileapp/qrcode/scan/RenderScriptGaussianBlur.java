@@ -1,4 +1,4 @@
-package android.tutorial.com.myapplication;
+package android.mobileapp.qrcode.scan;
 
 import android.content.Context;
 import android.graphics.Bitmap;
