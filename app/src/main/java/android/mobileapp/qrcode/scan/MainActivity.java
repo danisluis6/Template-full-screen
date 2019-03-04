@@ -185,6 +185,12 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        scannerView.stopCamera();
+    }
+
+    @Override
     public void handleResult(Result result) {
         final String scanResult = result.getText();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -205,11 +211,5 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         builder.setMessage(scanResult);
         AlertDialog alert = builder.create();
         alert.show();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        scannerView.stopCamera();
     }
 }
