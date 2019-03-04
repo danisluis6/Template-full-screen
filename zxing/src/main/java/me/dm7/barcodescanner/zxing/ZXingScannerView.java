@@ -8,11 +8,11 @@ import android.os.Looper;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
 import com.google.zxing.DecodeHintType;
 import com.google.zxing.MultiFormatReader;
 import com.google.zxing.PlanarYUVLuminanceSource;
-import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 
@@ -26,10 +26,9 @@ import me.dm7.barcodescanner.core.BarcodeScannerView;
 import me.dm7.barcodescanner.core.DisplayUtils;
 
 public class ZXingScannerView extends BarcodeScannerView {
-    private static final String TAG = "ZXingScannerView";
     private MultiFormatReader mMultiFormatReader;
-    public static final List<com.google.zxing.BarcodeFormat> ALL_FORMATS = new ArrayList();
-    private List<com.google.zxing.BarcodeFormat> mFormats;
+    public static final List<BarcodeFormat> ALL_FORMATS = new ArrayList();
+    private List<BarcodeFormat> mFormats;
     private ZXingScannerView.ResultHandler mResultHandler;
 
     public ZXingScannerView(Context context) {
@@ -39,11 +38,6 @@ public class ZXingScannerView extends BarcodeScannerView {
 
     public ZXingScannerView(Context context, AttributeSet attributeSet) {
         super(context, attributeSet);
-        this.initMultiFormatReader();
-    }
-
-    public void setFormats(List<com.google.zxing.BarcodeFormat> formats) {
-        this.mFormats = formats;
         this.initMultiFormatReader();
     }
 
@@ -97,12 +91,8 @@ public class ZXingScannerView extends BarcodeScannerView {
 
                     try {
                         rawResult = this.mMultiFormatReader.decodeWithState(bitmap);
-                    } catch (ReaderException var17) {
-                        ;
-                    } catch (NullPointerException var18) {
-                        ;
-                    } catch (ArrayIndexOutOfBoundsException var19) {
-                        ;
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     } finally {
                         this.mMultiFormatReader.reset();
                     }
@@ -126,7 +116,7 @@ public class ZXingScannerView extends BarcodeScannerView {
                     camera.setOneShotPreviewCallback(this);
                 }
             } catch (RuntimeException var21) {
-                Log.e("ZXingScannerView", var21.toString(), var21);
+                Log.e("ZXing ScannerView", var21.toString(), var21);
             }
 
         }
@@ -147,9 +137,8 @@ public class ZXingScannerView extends BarcodeScannerView {
             try {
                 source = new PlanarYUVLuminanceSource(data, width, height, rect.left, rect.top, rect.width(), rect.height(), false);
             } catch (Exception var7) {
-                ;
+                var7.printStackTrace();
             }
-
             return source;
         }
     }
