@@ -120,7 +120,7 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
                         mode = Mode.ZOOM;
                         break;
                     case MotionEvent.ACTION_POINTER_UP:
-                        mode = Mode.NONE; // changed from DRAG, was messing up zoom
+                        mode = Mode.NONE;
                         break;
                     case MotionEvent.ACTION_UP:
                         Log.i(TAG, "UP");

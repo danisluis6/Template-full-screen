@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.mobileapp.qrcode.custom.BuilderManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,10 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
+import com.nightonke.boommenu.BoomButtons.ButtonPlaceEnum;
+import com.nightonke.boommenu.BoomMenuButton;
+import com.nightonke.boommenu.ButtonEnum;
+import com.nightonke.boommenu.Piece.PiecePlaceEnum;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -34,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
 
     private static final int REQUEST_CAMERA = 1;
     private ZXingScannerView scannerView;
+    private BoomMenuButton mBoomMenuButton;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
@@ -67,8 +73,12 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        scannerView = findViewById(R.id.zXingScannerView);
         setContentView(R.layout.activity_camera);
+
+        scannerView = findViewById(R.id.zXingScannerView);
+        mBoomMenuButton = findViewById(R.id.bottomMenu);
+
+        initMenu();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarGradient(this);
@@ -81,6 +91,14 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                 requestPermissions();
             }
         }
+    }
+
+    private void initMenu() {
+        mBoomMenuButton.setButtonEnum(ButtonEnum.SimpleCircle);
+        mBoomMenuButton.setPiecePlaceEnum(PiecePlaceEnum.DOT_9_1);
+        mBoomMenuButton.setButtonPlaceEnum(ButtonPlaceEnum.SC_9_1);
+        for (int i = 0; i < mBoomMenuButton.getPiecePlaceEnum().pieceNumber(); i++)
+            mBoomMenuButton.addBuilder(BuilderManager.getSimpleCircleButtonBuilder());
     }
 
     @Override
