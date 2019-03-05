@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.mobileapp.qrcode.custom.BuilderManager;
+import android.mobileapp.qrcode.helper.Config;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -104,7 +105,11 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
                     .listener(new OnBMClickListener() {
                         @Override
                         public void onBoomButtonClick(int index) {
-//                            Toast.makeText(MainActivity.this, "Clicked " + index, Toast.LENGTH_SHORT).show();
+                            if (index == Config._OP_SCANNER_QR_CODE) {
+
+                            } else if (index == Config._OP_GALLERY) {
+
+                            }
                         }
                     });
             mBoomMenuButton.addBuilder(builder);

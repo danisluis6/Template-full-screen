@@ -303,7 +303,7 @@ public class BoomMenuButton extends FrameLayout implements InnerOnBoomButtonClic
         if (hasShadow) {
             shadow.setShadowOffsetX(shadowOffsetX);
             shadow.setShadowOffsetY(shadowOffsetY);
-            shadow.setShadowColor(shadowColor);
+//            shadow.setShadowColor(shadowColor);   // TODO
             shadow.setShadowRadius(shadowRadius);
             shadow.setShadowCornerRadius(shadowRadius + buttonRadius);
         } else {

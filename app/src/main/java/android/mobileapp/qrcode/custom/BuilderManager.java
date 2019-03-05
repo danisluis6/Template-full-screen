@@ -34,7 +34,8 @@ public class BuilderManager {
 
     public static SimpleCircleButton.Builder getSimpleCircleButtonBuilder() {
         return new SimpleCircleButton.Builder()
-                .normalImageRes(getImageResource());
+                .normalImageRes(getImageResource())
+                .pieceColorRes(R.color.default_bmb_dot_color);
     }
 
     private BuilderManager() {

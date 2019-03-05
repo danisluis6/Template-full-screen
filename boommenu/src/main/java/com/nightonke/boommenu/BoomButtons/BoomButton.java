@@ -290,7 +290,7 @@ public abstract class BoomButton extends FrameLayout {
             shadow = (BMBShadow) findViewById(R.id.shadow);
             shadow.setShadowOffsetX(shadowOffsetX);
             shadow.setShadowOffsetY(shadowOffsetY);
-            shadow.setShadowColor(shadowColor);
+//            shadow.setShadowColor(shadowColor); // TODO
             shadow.setShadowRadius(shadowRadius);
             shadow.setShadowCornerRadius(shadowCornerRadius);
         }
@@ -356,7 +356,7 @@ public abstract class BoomButton extends FrameLayout {
                     ColorStateList.valueOf(highlightedColor()),
                     gradientDrawable,
                     null);
-            Util.setDrawable(button, rippleDrawable);
+            // Util.setDrawable(button, rippleDrawable); // TODO
             this.rippleDrawable = rippleDrawable;
         } else {
             if (isRound)
@@ -384,7 +384,7 @@ public abstract class BoomButton extends FrameLayout {
 
     @SuppressLint("NewApi")
     protected void initCircleButton() {
-        button = (FrameLayout) findViewById(R.id.button);
+        button = findViewById(R.id.button);
         LayoutParams params = (LayoutParams) button.getLayoutParams();
         params.width = buttonRadius * 2;
         params.height = buttonRadius * 2;

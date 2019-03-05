@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import android.view.Gravity;
 
 import com.nightonke.boommenu.Piece.BoomPiece;
+import com.nightonke.boommenu.R;
 import com.nightonke.boommenu.Util;
 
 import java.lang.ref.WeakReference;
