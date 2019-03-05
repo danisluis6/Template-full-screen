@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         }
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
