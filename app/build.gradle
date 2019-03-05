@@ -9,6 +9,14 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath false
+            }
+        }
+        defaultConfig {
+            multiDexEnabled true
+        }
         renderscriptTargetApi 19
         renderscriptSupportModeEnabled true
     }
@@ -34,4 +42,16 @@ dependencies {
     compile project(path: ':zxing')
     compile project(path: ':core')
     compile project(path: ':boommenu')
+
+    // Implement Dagger 2
+    implementation 'com.google.dagger:dagger:2.14.1'
+    annotationProcessor 'com.google.dagger:dagger-compiler:2.14.1'
+    implementation 'org.glassfish:javax.annotation:10.0-b28'
+    implementation 'com.google.auto.factory:auto-factory:1.0-beta3'
+    //noinspection GradleDynamicVersion
+    implementation 'com.linroid.filtermenu:library:0.2.+@aar'
+
+    // Butterknife
+    implementation 'com.jakewharton:butterknife:8.8.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
 }
