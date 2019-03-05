@@ -6,6 +6,8 @@ import android.content.pm.ActivityInfo;
 import android.mobileapp.qrcode.di.component.AppComponent;
 import android.mobileapp.qrcode.di.component.DaggerAppComponent;
 import android.mobileapp.qrcode.di.module.app.AppModule;
+import android.mobileapp.qrcode.di.module.app.RoomModule;
+import android.mobileapp.qrcode.service.connect.FactoryModule;
 import android.os.Bundle;
 
 public class Application extends android.app.Application {
@@ -24,6 +26,8 @@ public class Application extends android.app.Application {
     private void initAppComponent() {
         mApplicationComponent = DaggerAppComponent.builder()
                 .appModule(new AppModule(this,mContext))
+                .roomModule(new RoomModule(this, mContext))
+                .factoryModule(new FactoryModule(this, mContext))
                 .build();
     }
 

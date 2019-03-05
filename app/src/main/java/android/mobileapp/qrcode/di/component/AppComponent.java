@@ -1,7 +1,9 @@
 package android.mobileapp.qrcode.di.component;
 
 import android.mobileapp.qrcode.di.module.app.AppModule;
+import android.mobileapp.qrcode.di.module.app.RoomModule;
 import android.mobileapp.qrcode.di.module.main.MainModule;
+import android.mobileapp.qrcode.service.connect.FactoryModule;
 
 import javax.inject.Singleton;
 
@@ -16,7 +18,9 @@ import dagger.Component;
 @Singleton
 @Component(
         modules = {
-                AppModule.class
+                AppModule.class,
+                RoomModule.class,
+                FactoryModule.class
         }
 )
 public interface AppComponent {

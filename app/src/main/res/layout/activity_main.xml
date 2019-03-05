@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        tools:context="android.mobileapp.qrcode.view.activity.MainActivity">
+        tools:context="android.mobileapp.qrcode.view.activity.main.MainActivity">
 
         <LinearLayout
             android:id="@+id/layout"
