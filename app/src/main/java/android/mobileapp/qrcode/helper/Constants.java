@@ -7,4 +7,8 @@ package android.mobileapp.qrcode.helper;
 
 public class Constants {
     public static final String EMPTY_STRING = "";
+
+    public static class FRG_DIALOG_TAG {
+        public static String DIALOG_QRCODE = "Dialog QRCode";
+    }
 }

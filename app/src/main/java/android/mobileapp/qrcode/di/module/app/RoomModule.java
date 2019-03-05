@@ -7,6 +7,8 @@ import android.mobileapp.qrcode.data.AppDatabase;
 import android.mobileapp.qrcode.data.storage.dao.ContentDAO;
 import android.mobileapp.qrcode.service.connect.ApiService;
 import android.mobileapp.qrcode.service.connect.rx.DisposableManager;
+import android.mobileapp.qrcode.view.activity.main.MainModel;
+import android.mobileapp.qrcode.view.activity.main.MainModelImpl;
 
 import javax.inject.Singleton;
 
@@ -50,7 +52,7 @@ public class RoomModule {
 
     @Singleton
     @Provides
-    MainModel provideMainModel(ApiService apiService) {
-        return new MainModelImpl(mContext, apiService);
+    MainModel provideMainModel(ApiService apiService, ContentDAO contentDAO, DisposableManager disposableManager) {
+        return new MainModelImpl(mContext, apiService, contentDAO, disposableManager);
     }
 }

@@ -2,6 +2,7 @@ package android.mobileapp.qrcode.view.activity.main;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -10,8 +11,12 @@ import android.mobileapp.qrcode.app.Application;
 import android.mobileapp.qrcode.custom.BuilderManager;
 import android.mobileapp.qrcode.di.module.main.MainModule;
 import android.mobileapp.qrcode.helper.Config;
+import android.mobileapp.qrcode.helper.Constants;
+import android.mobileapp.qrcode.helper.QRProtocol;
+import android.mobileapp.qrcode.helper.Utils;
 import android.mobileapp.qrcode.scan.R;
 import android.mobileapp.qrcode.view.BaseActivity;
+import android.mobileapp.qrcode.view.dialog.QRCodeDialog;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,9 +24,12 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -35,11 +43,23 @@ import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.ButtonEnum;
 import com.nightonke.boommenu.Piece.PiecePlaceEnum;
 
+import javax.inject.Inject;
+
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class MainActivity extends BaseActivity implements ZXingScannerView.ResultHandler {
+public class MainActivity extends BaseActivity implements ZXingScannerView.ResultHandler, MainView {
+
+    @Inject
+    Context mContext;
+
+    @Inject
+    MainActivity mActivity;
+
+    @Inject
+    QRCodeDialog mQrCodeDialog;
+
     private static final int UI_ANIMATION_DELAY = 0;
     private final Handler mHideHandler = new Handler();
 
@@ -79,7 +99,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
     @Override
     public void distributedDaggerComponents() {
         Application.getInstance().getAppComponent()
-                .plus(new MainModule(this))
+                .plus(new MainModule(this, this))
                 .inject(this);
     }
 
@@ -92,6 +112,21 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
     protected void initAttributes() {
         scannerView = findViewById(R.id.zXingScannerView);
         mBoomMenuButton = findViewById(R.id.bottomMenu);
+        mQrCodeDialog.setParentFragment(mContext, mActivity);
+        mQrCodeDialog.attachInterface(new QRCodeDialog.QRCodeInterface() {
+            @Override
+            public void exitQRDialog() {
+                delayedHide(0);
+                if (checkPermission()) {
+                    if (scannerView == null) {
+                        scannerView = new ZXingScannerView(MainActivity.this);
+                        setContentView(scannerView);
+                    }
+                    scannerView.setResultHandler(MainActivity.this);
+                    scannerView.startCamera();
+                }
+            }
+        });
     }
 
     @Override
@@ -242,23 +277,36 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
     @Override
     public void handleResult(Result result) {
         final String scanResult = result.getText();
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Scan Result");
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                scannerView.resumeCameraPreview(MainActivity.this);
-            }
-        });
-        builder.setNeutralButton("Visit", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(scanResult));
-                startActivity(intent);
-            }
-        });
-        builder.setMessage(scanResult);
-        AlertDialog alert = builder.create();
-        alert.show();
+
+//        if(Utils.matcherURL(scanResult)) {
+//            Log.i("TAG", "This is URL: " + scanResult);
+//        }
+
+        FragmentManager fm = mActivity.getSupportFragmentManager();
+        Bundle bundle = new Bundle();
+        bundle.putString(QRProtocol.QR_DIALOG, scanResult);
+        mQrCodeDialog.setArguments(bundle);
+        mQrCodeDialog.show(fm, Constants.FRG_DIALOG_TAG.DIALOG_QRCODE);
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.commit();
+
+//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//        builder.setTitle("Scan Result");
+//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                scannerView.resumeCameraPreview(MainActivity.this);
+//            }
+//        });
+//        builder.setNeutralButton("Visit", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(scanResult));
+//                startActivity(intent);
+//            }
+//        });
+//        builder.setMessage(scanResult);
+//        AlertDialog alert = builder.create();
+//        alert.show();
     }
 }
