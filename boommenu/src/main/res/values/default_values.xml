@@ -21,7 +21,7 @@
     <integer name="default_bmb_button_enum">-1</integer>
     <bool name="default_bmb_background_effect">true</bool>
     <bool name="default_bmb_ripple_effect">true</bool>
-    <color name="default_bmb_normal_color">#FF4081</color>
+    <color name="default_bmb_normal_color">#ffafed44</color>
     <color name="default_bmb_highlighted_color">#00000000</color>
     <color name="default_bmb_unable_color">#00000000</color>
     <bool name="default_bmb_draggable">false</bool>

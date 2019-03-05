@@ -376,9 +376,6 @@ public abstract class BoomButton extends FrameLayout {
                         highlightedColor(),
                         unableColor());
             if (isNeededColorAnimation()) {
-                // Then we need to create 2 drawables to perform the color-transaction effect.
-                // Because gradient-drawable is able to change the color,
-                // but not able to perform a click-effect.
                 nonRippleGradientDrawable = Util.getOvalDrawable(button, unable ? unableColor() : normalColor());
             }
             Util.setDrawable(button, nonRippleBitmapDrawable);

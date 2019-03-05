@@ -25,6 +25,8 @@ import android.widget.Toast;
 
 import com.google.zxing.Result;
 import com.nightonke.boommenu.BoomButtons.ButtonPlaceEnum;
+import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
+import com.nightonke.boommenu.BoomButtons.SimpleCircleButton;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.ButtonEnum;
 import com.nightonke.boommenu.Piece.PiecePlaceEnum;
@@ -97,8 +99,17 @@ public class MainActivity extends AppCompatActivity implements ZXingScannerView.
         mBoomMenuButton.setButtonEnum(ButtonEnum.SimpleCircle);
         mBoomMenuButton.setPiecePlaceEnum(PiecePlaceEnum.DOT_9_1);
         mBoomMenuButton.setButtonPlaceEnum(ButtonPlaceEnum.SC_9_1);
-        for (int i = 0; i < mBoomMenuButton.getPiecePlaceEnum().pieceNumber(); i++)
-            mBoomMenuButton.addBuilder(BuilderManager.getSimpleCircleButtonBuilder());
+        for (int i = 0; i < mBoomMenuButton.getPiecePlaceEnum().pieceNumber(); i++) {
+            SimpleCircleButton.Builder builder = BuilderManager.getSimpleCircleButtonBuilder()
+                    .listener(new OnBMClickListener() {
+                        @Override
+                        public void onBoomButtonClick(int index) {
+//                            Toast.makeText(MainActivity.this, "Clicked " + index, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+            mBoomMenuButton.addBuilder(builder);
+        }
+
     }
 
     @Override

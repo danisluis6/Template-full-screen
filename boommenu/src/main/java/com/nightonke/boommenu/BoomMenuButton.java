@@ -62,7 +62,6 @@ import static com.nightonke.boommenu.Piece.PiecePlaceEnum.Share;
  */
 
 @SuppressWarnings("unused")
-// Todo Landscape
 public class BoomMenuButton extends FrameLayout implements InnerOnBoomButtonClickListener {
 
     protected static final String TAG = "BoomMenuButton";
