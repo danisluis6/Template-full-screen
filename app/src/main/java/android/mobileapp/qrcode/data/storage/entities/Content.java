@@ -10,6 +10,9 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by vuongluis on 4/14/2018.
  * @author vuongluis
@@ -32,6 +35,10 @@ public class Content implements Parcelable {
     @SerializedName("contentData")
     private String mContentData;
 
+    @ColumnInfo(name = DatabaseInfo.Content.COLUMN_CONTENT_QRCODE)
+    @SerializedName("contentQRCode")
+    private String mContentQRCode;
+
     @ColumnInfo(name = DatabaseInfo.Content.COLUMN_CONTENT_DATE)
     @SerializedName("mContentDate")
     private String mContentDate;
@@ -40,10 +47,14 @@ public class Content implements Parcelable {
     @SerializedName("mContentUserID")
     private int mContentUserID;
 
-    public Content(int contentID, String contentType, String contentData, String contentDate, int contentUserID) {
+    @Ignore
+    private List<Content> contents = new ArrayList<>();
+
+    public Content(int contentID, String contentType, String contentData, String contentQRCode, String contentDate, int contentUserID) {
         this.mContentID = contentID;
         this.mContentType = contentType;
         this.mContentData = contentData;
+        this.mContentQRCode = contentQRCode;
         this.mContentDate = contentDate;
         this.mContentUserID = contentUserID;
     }
@@ -56,8 +67,10 @@ public class Content implements Parcelable {
         mContentID = in.readInt();
         mContentType = in.readString();
         mContentData = in.readString();
+        mContentQRCode = in.readString();
         mContentDate = in.readString();
         mContentUserID = in.readInt();
+        in.readTypedList(contents, getCREATOR());
     }
 
     public static final Creator<Content> CREATOR = new Creator<Content>() {
@@ -87,8 +100,10 @@ public class Content implements Parcelable {
         dest.writeValue(this.mContentID);
         dest.writeString(this.mContentType);
         dest.writeString(this.mContentData);
+        dest.writeString(this.mContentQRCode);
         dest.writeString(this.mContentDate);
         dest.writeValue(this.mContentUserID);
+        dest.writeTypedList(contents);
     }
 
     public int getContentID() {
@@ -129,5 +144,21 @@ public class Content implements Parcelable {
 
     public void setContentUserID(int mContentUserID) {
         this.mContentUserID = mContentUserID;
+    }
+
+    public String getContentQRCode() {
+        return mContentQRCode;
+    }
+
+    public void setContentQRCode(String mContentQRCode) {
+        this.mContentQRCode = mContentQRCode;
+    }
+
+    public List<Content> getContents() {
+        return contents;
+    }
+
+    public void setContents(List<Content> contents) {
+        this.contents = contents;
     }
 }

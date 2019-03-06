@@ -10,5 +10,7 @@ public class Constants {
 
     public static class FRG_DIALOG_TAG {
         public static String DIALOG_QRCODE = "Dialog QRCode";
+        public static String DIALOG_QRWEBVIEW = "Dialog QRWebView";
+        public static String DIALOG_QRHISTORY = "Dialog QRHistory";
     }
 }

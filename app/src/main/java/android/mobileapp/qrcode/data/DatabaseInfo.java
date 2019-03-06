@@ -20,6 +20,7 @@ public class DatabaseInfo {
         public static final String COLUMN_CONTENT_ID = "contentID";
         public static final String COLUMN_CONTENT_TYPE = "contentType";
         public static final String COLUMN_CONTENT_DATA = "contentData";
+        public static final String COLUMN_CONTENT_QRCODE = "contentQRCode";
         public static final String COLUMN_CONTENT_DATE = "contentDate";
         public static final String COLUMN_CONTENT_USER_ID = "userID";
     }

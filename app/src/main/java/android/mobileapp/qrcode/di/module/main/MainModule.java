@@ -1,5 +1,6 @@
 package android.mobileapp.qrcode.di.module.main;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.mobileapp.qrcode.di.scope.ActivityScope;
 import android.mobileapp.qrcode.view.activity.main.MainActivity;
@@ -8,6 +9,8 @@ import android.mobileapp.qrcode.view.activity.main.MainPresenter;
 import android.mobileapp.qrcode.view.activity.main.MainPresenterImpl;
 import android.mobileapp.qrcode.view.activity.main.MainView;
 import android.mobileapp.qrcode.view.dialog.QRCodeDialog;
+import android.mobileapp.qrcode.view.dialog.QRHistory;
+import android.mobileapp.qrcode.view.dialog.QRWebView;
 
 import dagger.Module;
 import dagger.Provides;
@@ -44,7 +47,25 @@ public class MainModule {
 
     @ActivityScope
     @Provides
+    QRWebView provideQRWebView() {
+        return new QRWebView();
+    }
+
+    @ActivityScope
+    @Provides
     QRCodeDialog provideQRCodeDialog() {
         return new QRCodeDialog();
+    }
+
+    @ActivityScope
+    @Provides
+    QRHistory provideQRHistory() {
+        return new QRHistory();
+    }
+
+    @Provides
+    @ActivityScope
+    ProgressDialog provideProgressDialog(MainActivity activity) {
+        return new ProgressDialog(activity);
     }
 }

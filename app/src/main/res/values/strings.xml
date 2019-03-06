@@ -1,3 +1,7 @@
 <resources>
     <string name="qr_dialog_title">Scanner Result</string>
+
+    <string name="progress_dialog_waitting">Please wait…</string>
+    <string name="error_save">Something went wrong</string>
+    <string name="label_history">Scan History</string>
 </resources>

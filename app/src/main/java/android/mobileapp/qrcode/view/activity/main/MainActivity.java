@@ -2,22 +2,23 @@ package android.mobileapp.qrcode.view.activity.main;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.mobileapp.qrcode.app.Application;
 import android.mobileapp.qrcode.custom.BuilderManager;
+import android.mobileapp.qrcode.data.storage.entities.Content;
 import android.mobileapp.qrcode.di.module.main.MainModule;
 import android.mobileapp.qrcode.helper.Config;
 import android.mobileapp.qrcode.helper.Constants;
 import android.mobileapp.qrcode.helper.QRProtocol;
-import android.mobileapp.qrcode.helper.Utils;
 import android.mobileapp.qrcode.scan.R;
 import android.mobileapp.qrcode.view.BaseActivity;
 import android.mobileapp.qrcode.view.dialog.QRCodeDialog;
-import android.net.Uri;
+import android.mobileapp.qrcode.view.dialog.QRHistory;
+import android.mobileapp.qrcode.view.dialog.QRWebView;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,7 +30,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -42,6 +42,8 @@ import com.nightonke.boommenu.BoomButtons.SimpleCircleButton;
 import com.nightonke.boommenu.BoomMenuButton;
 import com.nightonke.boommenu.ButtonEnum;
 import com.nightonke.boommenu.Piece.PiecePlaceEnum;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -59,6 +61,18 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
 
     @Inject
     QRCodeDialog mQrCodeDialog;
+
+    @Inject
+    QRWebView mQrWebView;
+
+    @Inject
+    QRHistory mQRHistory;
+
+    @Inject
+    MainPresenter mMainPresenter;
+
+    @Inject
+    public ProgressDialog pgDialog;
 
     private static final int UI_ANIMATION_DELAY = 0;
     private final Handler mHideHandler = new Handler();
@@ -113,6 +127,8 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         scannerView = findViewById(R.id.zXingScannerView);
         mBoomMenuButton = findViewById(R.id.bottomMenu);
         mQrCodeDialog.setParentFragment(mContext, mActivity);
+        mQrCodeDialog.attachQRHistory(mQRHistory);
+        mQrCodeDialog.attachQRWebview(mQrWebView, this);
         mQrCodeDialog.attachInterface(new QRCodeDialog.QRCodeInterface() {
             @Override
             public void exitQRDialog() {
@@ -140,6 +156,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkPermission()) {
                 launchApplication();
+                delayedHide(0);
             } else {
                 requestPermissions();
             }
@@ -165,13 +182,6 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
             mBoomMenuButton.addBuilder(builder);
         }
 
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        delayedHide(0);
-        launchApplication();
     }
 
     private void launchApplication() {
@@ -277,11 +287,6 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
     @Override
     public void handleResult(Result result) {
         final String scanResult = result.getText();
-
-//        if(Utils.matcherURL(scanResult)) {
-//            Log.i("TAG", "This is URL: " + scanResult);
-//        }
-
         FragmentManager fm = mActivity.getSupportFragmentManager();
         Bundle bundle = new Bundle();
         bundle.putString(QRProtocol.QR_DIALOG, scanResult);
@@ -289,24 +294,76 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         mQrCodeDialog.show(fm, Constants.FRG_DIALOG_TAG.DIALOG_QRCODE);
         FragmentTransaction ft = fm.beginTransaction();
         ft.commit();
+    }
 
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setTitle("Scan Result");
-//        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                scannerView.resumeCameraPreview(MainActivity.this);
-//            }
-//        });
-//        builder.setNeutralButton("Visit", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(scanResult));
-//                startActivity(intent);
-//            }
-//        });
-//        builder.setMessage(scanResult);
-//        AlertDialog alert = builder.create();
-//        alert.show();
+    @Override
+    public void showDialogProgress() {
+        if (pgDialog != null && !pgDialog.isShowing()) {
+            pgDialog.setTitle(null);
+            pgDialog.setCanceledOnTouchOutside(false);
+            pgDialog.setMessage(mContext.getResources().getString(R.string.progress_dialog_waitting));
+            try {
+                pgDialog.show();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void dismissDialogProgress() {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (pgDialog != null && pgDialog.isShowing()) {
+                    pgDialog.dismiss();
+                }
+            }
+        });
+    }
+
+
+    /**
+     * API
+     * @param content
+     */
+    @Override
+    public void saveContent(Content content) {
+        mMainPresenter.saveContent(content);
+    }
+
+    @Override
+    public void saveContentFailure(final String message) {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(mContext, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void saveContentSuccess(final Content content) {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mQrCodeDialog.updateContent(content);
+            }
+        });
+    }
+
+    @Override
+    public void getAllHistory() {
+        mMainPresenter.getAllHistory();
+    }
+
+    @Override
+    public void getContentSuccess(final List<Content> contents) {
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mQrCodeDialog.loadContents(contents);
+            }
+        });
     }
 }

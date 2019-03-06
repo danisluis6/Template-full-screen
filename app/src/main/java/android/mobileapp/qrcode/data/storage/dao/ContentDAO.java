@@ -2,7 +2,13 @@ package android.mobileapp.qrcode.data.storage.dao;
 
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.Query;
+import android.mobileapp.qrcode.data.DatabaseInfo;
 import android.mobileapp.qrcode.data.storage.entities.Content;
+
+import java.util.List;
+
+import io.reactivex.Maybe;
 
 /**
  * Created by vuongluis on 4/14/2018.
@@ -14,5 +20,8 @@ import android.mobileapp.qrcode.data.storage.entities.Content;
 public interface ContentDAO {
 
     @Insert
-    long saveItem(Content device);
+    long saveItem(Content content);
+
+    @Query("SELECT * FROM "+ DatabaseInfo.Tables.Content)
+    Maybe<List<Content>> getAll();
 }

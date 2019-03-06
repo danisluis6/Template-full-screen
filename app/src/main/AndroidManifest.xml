@@ -24,6 +24,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.mobileapp.qrcode.view.activity.main.MainActivity" />
+            </intent-filter>
         </activity>
 
     </application>

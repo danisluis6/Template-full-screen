@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@color/bg_color"
     android:fitsSystemWindows="true"
-    android:minWidth="1000dp"
+    android:minWidth="320dp"
     android:orientation="vertical">
 
     <TextView
@@ -49,6 +49,13 @@
             android:visibility="gone"
             android:layout_marginStart="8dp"
             android:src="@drawable/ic_link" />
+
+        <ImageView
+            android:id="@+id/imvHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_history" />
 
         <ImageView
             android:id="@+id/imvSave"
@@ -101,6 +108,7 @@
         android:id="@+id/imvGenerateBitmap"
         android:layout_gravity="center|center_vertical"
         android:scaleType="fitCenter"
+        android:layout_marginBottom="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
