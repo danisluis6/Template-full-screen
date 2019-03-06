@@ -22,7 +22,7 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
     private IViewFinder mViewFinderView;
     private Rect mFramingRectInPreview;
     private CameraHandlerThread mCameraHandlerThread;
-    private Boolean mFlashState;
+    private Boolean mFlashState = false;
     private boolean mAutofocusState = true;
     private boolean mShouldScaleToFill = true;
 

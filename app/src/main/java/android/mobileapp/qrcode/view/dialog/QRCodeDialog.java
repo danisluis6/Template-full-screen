@@ -55,7 +55,7 @@ public class QRCodeDialog extends DialogFragment implements View.OnClickListener
 
     private TextView tvContentData, tvTitle;
     private String contentData;
-    private ImageView imvExit, imvLink, imvQRCode, imvSearch, imvGenerateBitmap, imvSave, imvHistory, imvCopy;
+    private ImageView imvExit, imvLink, imvQRCode, imvSearch, imvGenerateBitmap, imvSave, imvHistory, imvCopy, imvShare, imvEmail;
     private QRWebView mQrWebView;
     private QRHistory mQrHistory;
 
@@ -90,6 +90,8 @@ public class QRCodeDialog extends DialogFragment implements View.OnClickListener
         imvSave.setOnClickListener(this);
         imvHistory.setOnClickListener(this);
         imvCopy.setOnClickListener(this);
+        imvShare.setOnClickListener(this);
+        imvEmail.setOnClickListener(this);
         return view;
     }
 
@@ -104,6 +106,8 @@ public class QRCodeDialog extends DialogFragment implements View.OnClickListener
         imvCopy = view.findViewById(R.id.imvCopy);
         imvGenerateBitmap = view.findViewById(R.id.imvGenerateBitmap);
         tvTitle = view.findViewById(R.id.tvTitle);
+        imvShare = view.findViewById(R.id.imvShare);
+        imvEmail = view.findViewById(R.id.imvEmail);
         tvTitle.setTypeface(OverrideFonts.getTypeFace(mContext, OverrideFonts.TYPE_FONT_NAME.HELVETICANEUE, OverrideFonts.TYPE_STYLE.LIGHT));
     }
 
@@ -198,6 +202,24 @@ public class QRCodeDialog extends DialogFragment implements View.OnClickListener
                 ClipData clip = ClipData.newPlainText(Constants.EMPTY_STRING, contentData);
                 clipboardManager.setPrimaryClip(clip);
                 Toast.makeText(mContext, "Saved to Clipboard", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.imvShare:
+                Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                sharingIntent.setType("text/plain");
+                String shareBody = contentData;
+                sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Share");
+                sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+                startActivity(Intent.createChooser(sharingIntent, "QRCode Scanner System"));
+                break;
+            case R.id.imvEmail:
+                String uriText =
+                        "mailto:" +
+                                "?subject=" + Uri.encode("QRCode Scanner System") +
+                                "&body=" + Uri.encode(contentData);
+                Uri emailURI = Uri.parse(uriText);
+                Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                sendIntent.setData(emailURI);
+                startActivity(Intent.createChooser(sendIntent, "QRCode Scanner System"));
                 break;
         }
     }

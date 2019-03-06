@@ -7,6 +7,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraDevice;
+import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CaptureRequest;
 import android.mobileapp.qrcode.app.Application;
 import android.mobileapp.qrcode.custom.BuilderManager;
 import android.mobileapp.qrcode.data.storage.entities.Content;
@@ -33,9 +37,11 @@ import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
+import com.nightonke.boommenu.Animation.EaseEnum;
 import com.nightonke.boommenu.BoomButtons.ButtonPlaceEnum;
 import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
 import com.nightonke.boommenu.BoomButtons.SimpleCircleButton;
@@ -51,7 +57,7 @@ import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
 import static android.Manifest.permission.CAMERA;
 
-public class MainActivity extends BaseActivity implements ZXingScannerView.ResultHandler, MainView {
+public class MainActivity extends BaseActivity implements ZXingScannerView.ResultHandler, MainView, View.OnClickListener {
 
     @Inject
     Context mContext;
@@ -81,17 +87,17 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
 
     private ZXingScannerView scannerView;
     private BoomMenuButton mBoomMenuButton;
+    private ImageView imvFlash;
+
+    private CameraManager mCameraManager;
+    private String mCameraId;
+    private Boolean isChecked;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
         public void run() {
-            scannerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            scannerView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
         }
     };
     private final Runnable mShowPart2Runnable = new Runnable() {
@@ -112,9 +118,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
 
     @Override
     public void distributedDaggerComponents() {
-        Application.getInstance().getAppComponent()
-                .plus(new MainModule(this, this))
-                .inject(this);
+        Application.getInstance().getAppComponent().plus(new MainModule(this, this)).inject(this);
     }
 
     @Override
@@ -126,6 +130,8 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
     protected void initAttributes() {
         scannerView = findViewById(R.id.zXingScannerView);
         mBoomMenuButton = findViewById(R.id.bottomMenu);
+        isChecked = true;
+        imvFlash = findViewById(R.id.imvFlash);
         mQrCodeDialog.setParentFragment(mContext, mActivity);
         mQrCodeDialog.attachQRHistory(mQRHistory);
         mQrCodeDialog.attachQRWebview(mQrWebView, this);
@@ -133,7 +139,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
             @Override
             public void exitQRDialog() {
                 delayedHide(0);
-                if (checkPermission()) {
+                if (cameraPermission()) {
                     if (scannerView == null) {
                         scannerView = new ZXingScannerView(MainActivity.this);
                         setContentView(scannerView);
@@ -148,17 +154,18 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
     @Override
     protected void initViews() {
         initMenu();
-
+        imvFlash.setImageResource(R.drawable.ic_off_flash);
+        imvFlash.setOnClickListener(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarGradient(this);
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkPermission()) {
+            if (cameraPermission()) {
                 launchApplication();
                 delayedHide(0);
             } else {
-                requestPermissions();
+                requestCameraPermissions();
             }
         }
     }
@@ -167,18 +174,18 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         mBoomMenuButton.setButtonEnum(ButtonEnum.SimpleCircle);
         mBoomMenuButton.setPiecePlaceEnum(PiecePlaceEnum.DOT_9_1);
         mBoomMenuButton.setButtonPlaceEnum(ButtonPlaceEnum.SC_9_1);
+        mBoomMenuButton.setShowEaseEnum(EaseEnum.EaseInExpo);
         for (int i = 0; i < mBoomMenuButton.getPiecePlaceEnum().pieceNumber(); i++) {
-            SimpleCircleButton.Builder builder = BuilderManager.getSimpleCircleButtonBuilder()
-                    .listener(new OnBMClickListener() {
-                        @Override
-                        public void onBoomButtonClick(int index) {
-                            if (index == Config._OP_SCANNER_QR_CODE) {
-                                // TODO
-                            } else if (index == Config._OP_GALLERY) {
-                                // TODO
-                            }
-                        }
-                    });
+            SimpleCircleButton.Builder builder = BuilderManager.getSimpleCircleButtonBuilder().listener(new OnBMClickListener() {
+                @Override
+                public void onBoomButtonClick(int index) {
+                    if (index == Config._OP_SCANNER_QR_CODE) {
+                        // TODO
+                    } else if (index == Config._OP_GALLERY) {
+                        // TODO
+                    }
+                }
+            });
             mBoomMenuButton.addBuilder(builder);
         }
 
@@ -186,7 +193,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
 
     private void launchApplication() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkPermission()) {
+            if (cameraPermission()) {
                 if (scannerView == null) {
                     scannerView = new ZXingScannerView(this);
                     setContentView(scannerView);
@@ -197,13 +204,15 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         }
     }
 
-    private boolean checkPermission() {
+    private boolean cameraPermission() {
         return (ContextCompat.checkSelfPermission(MainActivity.this, CAMERA) == PackageManager.PERMISSION_GRANTED);
     }
 
-    private  void requestPermissions() {
+    private void requestCameraPermissions() {
         ActivityCompat.requestPermissions(this, new String[]{CAMERA}, REQUEST_CAMERA);
     }
+
+
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     public static void setStatusBarGradient(Activity activity) {
@@ -252,13 +261,12 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
                         Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             if (shouldShowRequestPermissionRationale(CAMERA)) {
-                                displayAlertMessage("You need to allow access for both permissions",
-                                        new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                requestPermissions(new String[]{CAMERA}, REQUEST_CAMERA);
-                                            }
-                                        });
+                                displayAlertMessage("You need to allow access for both permissions", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        requestPermissions(new String[]{CAMERA}, REQUEST_CAMERA);
+                                    }
+                                });
                                 return;
                             }
                         }
@@ -270,12 +278,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
     }
 
     private void displayAlertMessage(String message, DialogInterface.OnClickListener listener) {
-        new AlertDialog.Builder(MainActivity.this)
-                .setMessage(message)
-                .setPositiveButton("OK", listener)
-                .setNegativeButton("Cancel", null)
-                .create()
-                .show();
+        new AlertDialog.Builder(MainActivity.this).setMessage(message).setPositiveButton("OK", listener).setNegativeButton("Cancel", null).create().show();
     }
 
     @Override
@@ -325,6 +328,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
 
     /**
      * API
+     *
      * @param content
      */
     @Override
@@ -366,4 +370,26 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
             }
         });
     }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.imvFlash:
+                if (mContext.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+//                    switchFlashLight(isChecked);
+                    isChecked = !isChecked;
+                }
+                break;
+        }
+    }
+
+//    public void switchFlashLight(boolean status) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            try {
+//                mCameraManager.setTorchMode(mCameraId, status);
+//            } catch (CameraAccessException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 }

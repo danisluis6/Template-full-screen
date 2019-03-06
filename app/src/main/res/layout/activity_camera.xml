@@ -24,6 +24,16 @@
         </android.support.constraint.ConstraintLayout>
     </FrameLayout>
 
+    <ImageView
+        android:id="@+id/imvFlash"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:layout_marginStart="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
     <com.nightonke.boommenu.BoomMenuButton
         android:id="@+id/bottomMenu"
         android:layout_width="wrap_content"
