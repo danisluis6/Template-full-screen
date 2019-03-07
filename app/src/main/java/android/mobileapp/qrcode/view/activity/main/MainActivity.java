@@ -45,6 +45,8 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
+import com.nbsp.materialfilepicker.MaterialFilePicker;
+import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.nightonke.boommenu.Animation.EaseEnum;
 import com.nightonke.boommenu.BoomButtons.ButtonPlaceEnum;
 import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
@@ -58,6 +60,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -95,6 +98,8 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
     private static final int REQUEST_CAMERA = 1;
 
     private static final int REQUEST_READ_EXTERNAL = 2;
+
+    private int OptionGalleryorStorage;
 
     private ZXingScannerView scannerView;
     private BoomMenuButton mBoomMenuButton;
@@ -150,6 +155,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         mQrCodeDialog.attachQRHistory(mQRHistory);
         mQrCodeDialog.attachQRWebview(mQrWebView, this);
         isFlashChecked = isCameraSwitch = true;
+        OptionGalleryorStorage = 0;
         mQrCodeDialog.attachInterface(new QRCodeDialog.QRCodeInterface() {
             @Override
             public void exitQRDialog() {
@@ -334,7 +340,10 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
                     boolean readExternalAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     if (readExternalAccepted) {
                         Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
-                        launchGallery();
+                        if (OptionGalleryorStorage == 0)
+                            launchGallery();
+                        else if (OptionGalleryorStorage == 1)
+                            startAccessStorage();
                     } else {
                         Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -464,6 +473,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
                 isCameraSwitch = !isCameraSwitch;
                 break;
             case R.id.imvGallery:
+                OptionGalleryorStorage = 0;
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     if (readExternalStoragePermission()) {
                         launchGallery();
@@ -485,11 +495,28 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
                 }
                 break;
             case R.id.imvStorage:
-                Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("image/*");
-                startActivityForResult(intent,111);
+                OptionGalleryorStorage = 1;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (readExternalStoragePermission()) {
+                        startAccessStorage();
+                        delayedHide(0);
+                    } else {
+                        requestReadExternalPermissions();
+                    }
+                }
                 break;
         }
+    }
+
+    private void startAccessStorage() {
+        new MaterialFilePicker()
+                .withActivity(mActivity)
+                .withRequestCode(Constants.REQUEST_STORAGE)
+                .withHiddenFiles(false)
+                .withTitle(Constants.INTERNAL_STORAGE)
+                .withCloseMenu(true)
+                .withFilter(Pattern.compile(Constants.PATTERN_FILE_TYPE))
+                .start();
     }
 
     @Override
@@ -513,6 +540,19 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
                                 Log.e("TAG", getResources().getString(R.string.error_selecting_file));
                             }
                         }
+                    }
+                    break;
+                case Constants.REQUEST_STORAGE:
+                    try {
+                        if (data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH) != null) {
+                            String path = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
+                            InputStream is = new BufferedInputStream(new FileInputStream(new File(path)));
+                            Bitmap bitmap = BitmapFactory.decodeStream(is);
+                            String scanResult = Utils.scanQRImage(bitmap);
+                            loadQRDialog(scanResult);
+                        }
+                    } catch (Exception e) {
+                        Log.e("TAG", getResources().getString(R.string.error_selecting_file));
                     }
                     break;
             }

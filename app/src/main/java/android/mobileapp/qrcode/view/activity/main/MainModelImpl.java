@@ -43,19 +43,7 @@ public class MainModelImpl implements MainModel {
             @Override
             public void run() {
                 if (mContentDAO.saveItem(content) > 0) {
-                    new AsyncTask<Void, Void, Void>() {
-
-                        @Override
-                        protected Void doInBackground(Void... voids) {
-                            mContentDAO.getAll().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Content>>() {
-                                @Override
-                                public void accept(@io.reactivex.annotations.NonNull List<Content> contents) throws Exception {
-                                    mMainPresenter.saveContentSuccess(content);
-                                }
-                            });
-                            return null;
-                        }
-                    }.execute();
+                    getAllHistory();
                 } else {
                     mMainPresenter.saveContentFailure(mContext.getString(R.string.error_save));
                 }
