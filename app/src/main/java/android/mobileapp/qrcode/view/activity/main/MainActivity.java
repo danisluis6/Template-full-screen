@@ -97,7 +97,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
 
     private ZXingScannerView scannerView;
     private BoomMenuButton mBoomMenuButton;
-    private ImageView imvFlash, imvCamera, imvGallery;
+    private ImageView imvFlash, imvCamera, imvGallery, imvRefresh;
     private Boolean isFlashChecked, isCameraSwitch;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
@@ -140,6 +140,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         imvFlash = findViewById(R.id.imvFlash);
         imvCamera = findViewById(R.id.imvCamera);
         imvGallery = findViewById(R.id.imvGallery);
+        imvRefresh = findViewById(R.id.imvRefresh);
         mQrCodeDialog.setParentFragment(mContext, mActivity);
         mQrCodeDialog.attachQRHistory(mQRHistory);
         mQrCodeDialog.attachQRWebview(mQrWebView, this);
@@ -168,6 +169,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         scannerView.setOnClickListener(this);
         imvCamera.setOnClickListener(this);
         imvGallery.setOnClickListener(this);
+        imvRefresh.setOnClickListener(this);
         imvCamera.setImageResource(R.drawable.ic_camera);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarGradient(this);
@@ -445,6 +447,17 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
                     } else {
                         requestReadExternalPermissions();
                     }
+                }
+                break;
+            case R.id.imvRefresh:
+                delayedHide(0);
+                if (cameraPermission()) {
+                    if (scannerView == null) {
+                        scannerView = new ZXingScannerView(MainActivity.this);
+                        setContentView(scannerView);
+                    }
+                    scannerView.setResultHandler(MainActivity.this);
+                    scannerView.startCamera();
                 }
                 break;
         }
