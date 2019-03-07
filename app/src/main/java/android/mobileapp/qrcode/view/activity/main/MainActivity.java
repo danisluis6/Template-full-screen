@@ -14,6 +14,7 @@ import android.hardware.Camera;
 import android.mobileapp.qrcode.app.Application;
 import android.mobileapp.qrcode.custom.BuilderManager;
 import android.mobileapp.qrcode.data.storage.entities.Content;
+import android.mobileapp.qrcode.data.storage.entities.Folder;
 import android.mobileapp.qrcode.di.module.main.MainModule;
 import android.mobileapp.qrcode.helper.Config;
 import android.mobileapp.qrcode.helper.Constants;
@@ -27,6 +28,7 @@ import android.mobileapp.qrcode.view.dialog.QRWebView;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
@@ -45,8 +47,6 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
-import com.nbsp.materialfilepicker.MaterialFilePicker;
-import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.nightonke.boommenu.Animation.EaseEnum;
 import com.nightonke.boommenu.BoomButtons.ButtonPlaceEnum;
 import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
@@ -59,8 +59,8 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
@@ -100,6 +100,8 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
     private static final int REQUEST_READ_EXTERNAL = 2;
 
     private int OptionGalleryorStorage;
+
+    private ArrayList<Folder> arrFolder;
 
     private ZXingScannerView scannerView;
     private BoomMenuButton mBoomMenuButton;
@@ -156,6 +158,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         mQrCodeDialog.attachQRWebview(mQrWebView, this);
         isFlashChecked = isCameraSwitch = true;
         OptionGalleryorStorage = 0;
+        arrFolder = new ArrayList<>();
         mQrCodeDialog.attachInterface(new QRCodeDialog.QRCodeInterface() {
             @Override
             public void exitQRDialog() {
@@ -509,14 +512,19 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
     }
 
     private void startAccessStorage() {
-        new MaterialFilePicker()
-                .withActivity(mActivity)
-                .withRequestCode(Constants.REQUEST_STORAGE)
-                .withHiddenFiles(false)
-                .withTitle(Constants.INTERNAL_STORAGE)
-                .withCloseMenu(true)
-                .withFilter(Pattern.compile(Constants.PATTERN_FILE_TYPE))
-                .start();
+        File root = new File(Environment.getExternalStorageDirectory().getAbsolutePath());
+        extractSubFolder(root);
+    }
+
+    private void extractSubFolder(File root) {
+        File[] files = root.listFiles();
+        arrFolder.clear();
+        for (File f : files) {
+            arrFolder.add(new Folder(R.drawable.ic_folder, f.getName(), (f.isDirectory() ? "Directory" : "File"), f.getAbsolutePath()));
+        }
+        Intent intent = new Intent(mActivity, StorageActivity.class);
+        intent.putParcelableArrayListExtra("arrFolder", arrFolder);
+        startActivityForResult(intent, Constants.REQUEST_STORAGE);
     }
 
     @Override
@@ -543,17 +551,38 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
                     }
                     break;
                 case Constants.REQUEST_STORAGE:
+                    final String mCurrentPath = data.getStringExtra("Path");
                     try {
-                        if (data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH) != null) {
-                            String path = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
-                            InputStream is = new BufferedInputStream(new FileInputStream(new File(path)));
-                            Bitmap bitmap = BitmapFactory.decodeStream(is);
-                            String scanResult = Utils.scanQRImage(bitmap);
-                            loadQRDialog(scanResult);
-                        }
+                        InputStream is = new BufferedInputStream(new FileInputStream(new File(mCurrentPath)));
+                        Bitmap bitmap = BitmapFactory.decodeStream(is);
+                        String scanResult = Utils.scanQRImage(bitmap);
+                        loadQRDialog(scanResult);
                     } catch (Exception e) {
                         Log.e("TAG", getResources().getString(R.string.error_selecting_file));
                     }
+//                    Completable.fromAction(new Action() {
+//                        @Override
+//                        public void run() throws Exception {
+//                            showDialogProgress();
+//                            mPageCount = calculateNumberPage(new File(mCurrentPath));
+//                            loadPdfFile(new File(mCurrentPath));
+//                        }
+//                    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CompletableObserver() {
+//                        @Override
+//                        public void onSubscribe(Disposable d) {
+//                        }
+//
+//                        @Override
+//                        public void onComplete() {
+//                            if (getChildFragmentManager().getBackStackEntryCount() > 0) {
+//                                mFragmentManager.popBackStack();
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable e) {
+//                        }
+//                    });
                     break;
             }
         }

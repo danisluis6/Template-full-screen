@@ -3,6 +3,7 @@ package android.mobileapp.qrcode.helper;
 import android.app.Activity;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.mobileapp.qrcode.data.storage.entities.Folder;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -14,6 +15,9 @@ import com.google.zxing.RGBLuminanceSource;
 import com.google.zxing.Reader;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Utils {
 
@@ -63,5 +67,24 @@ public class Utils {
             Log.e("TAG", "Error decoding barcode", e);
         }
         return contents;
+    }
+
+    public static List<Folder> getFilterArrayFolder(List<Folder> folders) {
+        ArrayList<Folder> folderArrayList = new ArrayList<>();
+        for (int index = 0; index < folders.size(); index++) {
+            if (fitterFolder(folders.get(index))) folderArrayList.add(folders.get(index));
+        }
+        return folderArrayList;
+    }
+
+    private static boolean fitterFolder(Folder item) {
+        if (item.getName().toLowerCase().startsWith("movie")
+                || item.getName().toLowerCase().startsWith("picture")
+                || item.getName().toLowerCase().startsWith("zalo")
+                || item.getName().toLowerCase().startsWith("download")
+                || item.getName().toLowerCase().startsWith("dcim")
+                || item.getName().toLowerCase().startsWith("android"))
+            return true;
+        return false;
     }
 }

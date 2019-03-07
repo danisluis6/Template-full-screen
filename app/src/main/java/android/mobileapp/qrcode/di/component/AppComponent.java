@@ -3,6 +3,7 @@ package android.mobileapp.qrcode.di.component;
 import android.mobileapp.qrcode.di.module.app.AppModule;
 import android.mobileapp.qrcode.di.module.app.RoomModule;
 import android.mobileapp.qrcode.di.module.main.MainModule;
+import android.mobileapp.qrcode.di.module.main.StorageModule;
 import android.mobileapp.qrcode.service.connect.FactoryModule;
 
 import javax.inject.Singleton;
@@ -25,4 +26,5 @@ import dagger.Component;
 )
 public interface AppComponent {
         MainComponent plus(MainModule module);
+        StorageComponent plus(StorageModule module);
 }

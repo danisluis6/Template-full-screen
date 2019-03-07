@@ -8,4 +8,5 @@
 
     <color name="bg_color">#dbdbdb</color>
     <color name="thumb">#afed44</color>
+    <color name="folder">#17222C</color>
 </resources>

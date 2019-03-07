@@ -1,1 +1,1 @@
-include ':app', ':core', ':zxing', ':boommenu', ':library'
+include ':app', ':core', ':zxing', ':boommenu'
