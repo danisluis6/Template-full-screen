@@ -39,7 +39,8 @@
 
         <activity android:name="android.mobileapp.qrcode.view.activity.main.StorageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@style/FullscreenTheme"/>
+            android:theme="@style/FullscreenTheme">
+        </activity>
 
     </application>
 

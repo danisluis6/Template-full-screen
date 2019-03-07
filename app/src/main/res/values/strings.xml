@@ -6,4 +6,7 @@
     <string name="label_history">Scan History</string>
 
     <string name="error_selecting_file">The selected file is not a valid file. Please select a valid file and try again.</string>
+
+    <string name="pageCount">Page %1$d of %2$d</string>
+    <string name="file_invalid">No file uploaded or invalid file type!</string>
 </resources>

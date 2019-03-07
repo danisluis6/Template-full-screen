@@ -24,6 +24,7 @@ import android.mobileapp.qrcode.scan.R;
 import android.mobileapp.qrcode.view.BaseActivity;
 import android.mobileapp.qrcode.view.dialog.QRCodeDialog;
 import android.mobileapp.qrcode.view.dialog.QRHistory;
+import android.mobileapp.qrcode.view.dialog.QRPDFView;
 import android.mobileapp.qrcode.view.dialog.QRWebView;
 import android.net.Uri;
 import android.os.Build;
@@ -38,7 +39,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -79,6 +79,9 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
 
     @Inject
     QRCodeDialog mQrCodeDialog;
+
+    @Inject
+    QRPDFView mQRPDFView;
 
     @Inject
     QRWebView mQrWebView;
@@ -154,6 +157,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         imvStorage = findViewById(R.id.imvStorage);
         sbZoom = findViewById(R.id.sbZoom);
         mQrCodeDialog.setParentFragment(mContext, mActivity);
+        mQRPDFView.setParentFragment(mContext, mActivity);
         mQrCodeDialog.attachQRHistory(mQRHistory);
         mQrCodeDialog.attachQRWebview(mQrWebView, this);
         isFlashChecked = isCameraSwitch = true;
@@ -188,7 +192,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         sbZoom.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
-                float scale =  ((progress / 10.0f)+1);
+                float scale = ((progress / 10.0f) + 1);
                 scannerView.setScaleX(scale);
                 scannerView.setScaleY(scale);
             }
@@ -343,10 +347,8 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
                     boolean readExternalAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
                     if (readExternalAccepted) {
                         Toast.makeText(MainActivity.this, "Permission Granted", Toast.LENGTH_SHORT).show();
-                        if (OptionGalleryorStorage == 0)
-                            launchGallery();
-                        else if (OptionGalleryorStorage == 1)
-                            startAccessStorage();
+                        if (OptionGalleryorStorage == 0) launchGallery();
+                        else if (OptionGalleryorStorage == 1) startAccessStorage();
                     } else {
                         Toast.makeText(MainActivity.this, "Permission Denied", Toast.LENGTH_SHORT).show();
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -545,7 +547,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
                                     loadQRDialog(scanResult);
                                 }
                             } catch (Exception e) {
-                                Log.e("TAG", getResources().getString(R.string.error_selecting_file));
+                                Toast.makeText(mContext, getResources().getString(R.string.error_selecting_file), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
@@ -553,40 +555,48 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
                 case Constants.REQUEST_STORAGE:
                     final String mCurrentPath = data.getStringExtra("Path");
                     try {
-                        InputStream is = new BufferedInputStream(new FileInputStream(new File(mCurrentPath)));
-                        Bitmap bitmap = BitmapFactory.decodeStream(is);
-                        String scanResult = Utils.scanQRImage(bitmap);
-                        loadQRDialog(scanResult);
+                        if (Utils.matcherImage(new File(mCurrentPath).getName())) {
+                            InputStream is = new BufferedInputStream(new FileInputStream(new File(mCurrentPath)));
+                            Bitmap bitmap = BitmapFactory.decodeStream(is);
+                            String scanResult = Utils.scanQRImage(bitmap);
+                            loadQRDialog(scanResult);
+                        } else if (Utils.matcherPDF(new File(mCurrentPath).getName())) {
+                            loadQRPDFView(new File(mCurrentPath));
+                        }
                     } catch (Exception e) {
-                        Log.e("TAG", getResources().getString(R.string.error_selecting_file));
+                        Toast.makeText(mContext, getResources().getString(R.string.error_selecting_file), Toast.LENGTH_SHORT).show();
                     }
-//                    Completable.fromAction(new Action() {
-//                        @Override
-//                        public void run() throws Exception {
-//                            showDialogProgress();
-//                            mPageCount = calculateNumberPage(new File(mCurrentPath));
-//                            loadPdfFile(new File(mCurrentPath));
-//                        }
-//                    }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new CompletableObserver() {
-//                        @Override
-//                        public void onSubscribe(Disposable d) {
-//                        }
-//
-//                        @Override
-//                        public void onComplete() {
-//                            if (getChildFragmentManager().getBackStackEntryCount() > 0) {
-//                                mFragmentManager.popBackStack();
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//                        }
-//                    });
                     break;
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void loadQRPDFView(final File file) {
+        if (!file.isFile()) {
+            Toast.makeText(mContext, getString(R.string.file_invalid), Toast.LENGTH_SHORT).show();
+            delayedHide(0);
+            if (cameraPermission()) {
+                if (scannerView == null) {
+                    scannerView = new ZXingScannerView(MainActivity.this);
+                    setContentView(scannerView);
+                }
+                scannerView.setResultHandler(MainActivity.this);
+                scannerView.startCamera();
+            }
+        } else {
+            new Handler().post(new Runnable() {
+                public void run() {
+                    FragmentManager fm = mActivity.getSupportFragmentManager();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(QRProtocol.QR_PDF_VIEW, file.getAbsolutePath());
+                    mQRPDFView.setArguments(bundle);
+                    mQRPDFView.show(fm, Constants.FRG_DIALOG_TAG.DIALOG_QR_PDF);
+                    FragmentTransaction ft = fm.beginTransaction();
+                    ft.commit();
+                }
+            });
+        }
     }
 
     private void loadQRDialog(final String scanResult) {

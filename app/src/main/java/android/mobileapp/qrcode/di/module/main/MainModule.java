@@ -11,6 +11,7 @@ import android.mobileapp.qrcode.view.activity.main.MainView;
 import android.mobileapp.qrcode.view.dialog.QRCodeDialog;
 import android.mobileapp.qrcode.view.dialog.QRHistory;
 import android.mobileapp.qrcode.view.dialog.QRWebView;
+import android.mobileapp.qrcode.view.dialog.adapter.QRPDFViewFile;
 
 import dagger.Module;
 import dagger.Provides;
@@ -61,6 +62,12 @@ public class MainModule {
     @Provides
     QRHistory provideQRHistory() {
         return new QRHistory();
+    }
+
+    @ActivityScope
+    @Provides
+    QRPDFViewFile provideQRPDFViewFile() {
+        return new QRPDFViewFile();
     }
 
     @Provides

@@ -16,6 +16,10 @@ import com.google.zxing.Reader;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +27,16 @@ public class Utils {
 
     public static boolean matcherURL(String scannerResult) {
         String regex = "^(https?|ftp|file)://[-a-zA-Z0-9+&@#/%?=~_|!:,.;]*[-a-zA-Z0-9+&@#/%=~_|]";
+        return scannerResult.matches(regex);
+    }
+
+    public static boolean matcherImage(String scannerResult) {
+        String regex = "(.*/)*.+\\.(png|jpg|gif|bmp|jpeg|PNG|JPG|GIF|BMP|JPEG)$";
+        return scannerResult.matches(regex);
+    }
+
+    public static boolean matcherPDF(String scannerResult) {
+        String regex = "(.*/)*.+\\.(pdf|PDF)$";
         return scannerResult.matches(regex);
     }
 
@@ -86,5 +100,14 @@ public class Utils {
                 || item.getName().toLowerCase().startsWith("android"))
             return true;
         return false;
+    }
+
+    public static int calculateNumberPage(File file) {
+        try {
+            return PDDocument.load(file).getNumberOfPages();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 }
