@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> {
@@ -62,5 +64,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     @Override
     public int getItemCount() {
         return mGroupContents.size();
+    }
+
+    public void refresh() {
+        Collections.sort(mGroupContents, new Comparator<Content>() {
+            @Override
+            public int compare(Content obj1, Content obj2) {
+                return Integer.compare(obj2.getContentID(), obj1.getContentID());
+            }
+        });
+        notifyDataSetChanged();
     }
 }
