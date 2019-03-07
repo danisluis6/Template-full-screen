@@ -485,7 +485,9 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
                 }
                 break;
             case R.id.imvStorage:
-
+                Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
+                intent.setType("image/*");
+                startActivityForResult(intent,111);
                 break;
         }
     }
