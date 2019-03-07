@@ -133,7 +133,7 @@ public class QRCodeDialog extends DialogFragment implements View.OnClickListener
         bundle.putInt(QRProtocol.OBJ, 1);
         bundle.putParcelableArrayList(QRProtocol.ARR_CONTENT, (ArrayList<? extends Parcelable>) arrContents);
         mQrHistory.setArguments(bundle);
-        mQrHistory.show(fm, Constants.FRG_DIALOG_TAG.DIALOG_QRWEBVIEW);
+        mQrHistory.show(fm, Constants.FRG_DIALOG_TAG.DIALOG_QRHISTORY);
         FragmentTransaction ft = fm.beginTransaction();
         ft.commit();
     }
@@ -144,7 +144,7 @@ public class QRCodeDialog extends DialogFragment implements View.OnClickListener
         bundle.putInt(QRProtocol.OBJ, 0);
         bundle.putParcelable(QRProtocol.OBJ_CONTENT, content);
         mQrHistory.setArguments(bundle);
-        mQrHistory.show(fm, Constants.FRG_DIALOG_TAG.DIALOG_QRWEBVIEW);
+        mQrHistory.show(fm, Constants.FRG_DIALOG_TAG.DIALOG_QRHISTORY);
         FragmentTransaction ft = fm.beginTransaction();
         ft.commit();
     }
@@ -161,6 +161,7 @@ public class QRCodeDialog extends DialogFragment implements View.OnClickListener
 
     @Override
     public void onClick(View view) {
+        if (Utils.isDoubleClick()) return;
         switch (view.getId()) {
             case R.id.imvExit:
                 this.dismiss();

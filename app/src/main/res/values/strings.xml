@@ -4,4 +4,6 @@
     <string name="progress_dialog_waitting">Please wait…</string>
     <string name="error_save">Something went wrong</string>
     <string name="label_history">Scan History</string>
+
+    <string name="error_selecting_file">The selected file is not a valid file. Please select a valid file and try again.</string>
 </resources>

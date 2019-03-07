@@ -13,4 +13,8 @@ public class Constants {
         public static String DIALOG_QRWEBVIEW = "Dialog QRWebView";
         public static String DIALOG_QRHISTORY = "Dialog QRHistory";
     }
+
+    public final static int REQUEST_GALLERY = 4;
+
+    static int DOUBLE_CLICK_TIME_DELTA = 500;
 }
