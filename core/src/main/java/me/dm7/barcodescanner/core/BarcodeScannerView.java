@@ -103,7 +103,6 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
                     case MotionEvent.ACTION_DOWN:
-                        Log.i(TAG, "DOWN");
                         if (scale > MIN_ZOOM) {
                             mode = Mode.DRAG;
                             startX = motionEvent.getX() - prevDx;
@@ -123,7 +122,6 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
                         mode = Mode.NONE;
                         break;
                     case MotionEvent.ACTION_UP:
-                        Log.i(TAG, "UP");
                         mode = Mode.NONE;
                         prevDx = dx;
                         prevDy = dy;
@@ -137,8 +135,6 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
                     float maxDy = child().getHeight() * (scale - 1);
                     dx = Math.min(Math.max(dx, -maxDx), 0);
                     dy = Math.min(Math.max(dy, -maxDy), 0);
-                    Log.i(TAG, "Width: " + child().getWidth() + ", scale " + scale + ", dx " + dx
-                            + ", max " + maxDx);
                     applyScaleAndTranslation();
                 }
 
@@ -149,29 +145,22 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector scaleDetector) {
-        Log.i(TAG, "onScaleBegin");
         return true;
     }
 
     @Override
     public boolean onScale(ScaleGestureDetector scaleDetector) {
         float scaleFactor = scaleDetector.getScaleFactor();
-        Log.i(TAG, "onScale(), scaleFactor = " + scaleFactor);
         if (lastScaleFactor == 0 || (Math.signum(scaleFactor) == Math.signum(lastScaleFactor))) {
             float prevScale = scale;
             scale *= scaleFactor;
             scale = Math.max(MIN_ZOOM, Math.min(scale, MAX_ZOOM));
             lastScaleFactor = scaleFactor;
             float adjustedScaleFactor = scale / prevScale;
-            // added logic to adjust dx and dy for pinch/zoom pivot point
-            Log.d(TAG, "onScale, adjustedScaleFactor = " + adjustedScaleFactor);
-            Log.d(TAG, "onScale, BEFORE dx/dy = " + dx + "/" + dy);
             float focusX = scaleDetector.getFocusX();
             float focusY = scaleDetector.getFocusY();
-            Log.d(TAG, "onScale, focusX/focusy = " + focusX + "/" + focusY);
             dx += (dx - focusX) * (adjustedScaleFactor - 1);
             dy += (dy - focusY) * (adjustedScaleFactor - 1);
-            Log.d(TAG, "onScale, dx/dy = " + dx + "/" + dy);
         } else {
             lastScaleFactor = 0;
         }
@@ -186,8 +175,8 @@ public abstract class BarcodeScannerView extends FrameLayout implements Camera.P
     private void applyScaleAndTranslation() {
         child().setScaleX(scale);
         child().setScaleY(scale);
-        child().setPivotX(0f);  // default is to pivot at view center
-        child().setPivotY(0f);  // default is to pivot at view center
+        child().setPivotX(0f);
+        child().setPivotY(0f);
         child().setTranslationX(dx);
         child().setTranslationY(dy);
     }

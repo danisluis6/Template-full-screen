@@ -41,6 +41,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.google.zxing.Result;
@@ -97,7 +98,9 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
 
     private ZXingScannerView scannerView;
     private BoomMenuButton mBoomMenuButton;
-    private ImageView imvFlash, imvCamera, imvGallery, imvRefresh;
+    private ImageView imvFlash, imvCamera, imvGallery, imvRefresh, imvStorage;
+    private SeekBar sbZoom;
+
     private Boolean isFlashChecked, isCameraSwitch;
 
     private final Runnable mHidePart2Runnable = new Runnable() {
@@ -141,6 +144,8 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         imvCamera = findViewById(R.id.imvCamera);
         imvGallery = findViewById(R.id.imvGallery);
         imvRefresh = findViewById(R.id.imvRefresh);
+        imvStorage = findViewById(R.id.imvStorage);
+        sbZoom = findViewById(R.id.sbZoom);
         mQrCodeDialog.setParentFragment(mContext, mActivity);
         mQrCodeDialog.attachQRHistory(mQRHistory);
         mQrCodeDialog.attachQRWebview(mQrWebView, this);
@@ -170,6 +175,25 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         imvCamera.setOnClickListener(this);
         imvGallery.setOnClickListener(this);
         imvRefresh.setOnClickListener(this);
+        imvStorage.setOnClickListener(this);
+        sbZoom.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean b) {
+                float scale =  ((progress / 10.0f)+1);
+                scannerView.setScaleX(scale);
+                scannerView.setScaleY(scale);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         imvCamera.setImageResource(R.drawable.ic_camera);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setStatusBarGradient(this);
@@ -459,6 +483,9 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
                     scannerView.setResultHandler(MainActivity.this);
                     scannerView.startCamera();
                 }
+                break;
+            case R.id.imvStorage:
+
                 break;
         }
     }
