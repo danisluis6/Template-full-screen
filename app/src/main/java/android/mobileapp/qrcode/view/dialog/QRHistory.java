@@ -56,7 +56,7 @@ public class QRHistory extends DialogFragment {
     private void initComponent(View view) {
         rcvHistory = view.findViewById(R.id.rcvHistory);
         tvTitleHistory = view.findViewById(R.id.tvTitleHistory);
-        rcvHistory.setLayoutManager(new LinearLayoutManager(mContext));
+        rcvHistory.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         mHistoryAdapter = new HistoryAdapter(mContext, mActivity, new ArrayList<Content>());
         rcvHistory.setAdapter(mHistoryAdapter);
         tvTitleHistory.setText(getString(R.string.label_history));
