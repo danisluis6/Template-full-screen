@@ -16,6 +16,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     private Context mContext;
     private List<Content> mGroupContents;
+    private HistoryInterface mIHistoryInterface;
 
     public void updateQRHistory(List<Content> arrContents) {
         mGroupContents = arrContents;
@@ -40,9 +41,10 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         }
     }
 
-    public HistoryAdapter(Context context, List<Content> groupContents) {
+    public HistoryAdapter(Context context, List<Content> groupContents, HistoryInterface _interface) {
         mContext = context;
         mGroupContents = groupContents;
+        mIHistoryInterface = _interface;
     }
 
     public void remove(int index) {
@@ -80,6 +82,16 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         final Content item = mGroupContents.get(position);
         holder.tvData.setText(item.getContentData());
         holder.tvDate.setText(item.getContentDate());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mIHistoryInterface.getContent(item);
+            }
+        });
+    }
+
+    public interface HistoryInterface {
+        void getContent(Content item);
     }
 
     @Override

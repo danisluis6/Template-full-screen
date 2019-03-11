@@ -39,6 +39,7 @@ public class QRHistory extends DialogFragment implements RecyclerItemTouchHelper
     private AlertDialog mAlertDialogConfirm;
     private Content mDeletedItem;
     private MainPresenter mPresenter;
+    private QRHistoryInterface mHistoryInterface;
 
     @Inject
     public QRHistory() {
@@ -77,16 +78,26 @@ public class QRHistory extends DialogFragment implements RecyclerItemTouchHelper
 
         rcvHistory.setHasFixedSize(true);
         rcvHistory.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        mHistoryAdapter = new HistoryAdapter(mContext, new ArrayList<Content>());
+        mHistoryAdapter = new HistoryAdapter(mContext, new ArrayList<Content>(), new HistoryAdapter.HistoryInterface() {
+            @Override
+            public void getContent(Content item) {
+                mHistoryInterface.getContent(item);
+            }
+        });
         rcvHistory.setAdapter(mHistoryAdapter);
         ItemTouchHelper.SimpleCallback itemTouchHelper = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(rcvHistory);
     }
 
-    public void setParentFragment(Context context, MainActivity activity, MainPresenter presenter) {
+    public interface QRHistoryInterface {
+        void getContent(Content content);
+    }
+
+    public void setParentFragment(Context context, MainActivity activity, MainPresenter presenter, QRHistoryInterface _interface) {
         mActivity = activity;
         mContext = context;
         mPresenter = presenter;
+        mHistoryInterface = _interface;
     }
 
     @Override

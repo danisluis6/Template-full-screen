@@ -126,7 +126,14 @@ public class QRCodeDialog extends DialogFragment implements View.OnClickListener
 
     public void attachQRHistory(QRHistory qRHistory) {
         mQrHistory = qRHistory;
-        mQrHistory.setParentFragment(mContext, mActivity, mPresenter);
+        mQrHistory.setParentFragment(mContext, mActivity, mPresenter, new QRHistory.QRHistoryInterface() {
+            @Override
+            public void getContent(Content content) {
+                mQrHistory.dismiss();
+                contentData = content.getContentData();
+                tvContentData.setText(contentData);
+            }
+        });
     }
 
     public void loadContents(List<Content> arrContents) {
