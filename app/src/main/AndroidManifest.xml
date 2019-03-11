@@ -22,15 +22,20 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity
-            android:name="android.mobileapp.qrcode.view.activity.main.MainActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
+        <activity android:name="android.mobileapp.qrcode.view.activity.splash.SplashActivity"
             android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity
+            android:name="android.mobileapp.qrcode.view.activity.main.MainActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@style/FullscreenTheme"
+            android:launchMode="singleTop">
 
             <intent-filter>
                 <action android:name="android.mobileapp.qrcode.view.activity.main.MainActivity" />

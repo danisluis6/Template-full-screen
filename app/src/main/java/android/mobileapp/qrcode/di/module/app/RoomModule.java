@@ -9,6 +9,8 @@ import android.mobileapp.qrcode.service.connect.ApiService;
 import android.mobileapp.qrcode.service.connect.rx.DisposableManager;
 import android.mobileapp.qrcode.view.activity.main.MainModel;
 import android.mobileapp.qrcode.view.activity.main.MainModelImpl;
+import android.mobileapp.qrcode.view.activity.splash.SplashModel;
+import android.mobileapp.qrcode.view.activity.splash.SplashModelImpl;
 
 import javax.inject.Singleton;
 
@@ -54,5 +56,11 @@ public class RoomModule {
     @Provides
     MainModel provideMainModel(ApiService apiService, ContentDAO contentDAO) {
         return new MainModelImpl(mContext, apiService, contentDAO);
+    }
+
+    @Singleton
+    @Provides
+    SplashModel provideSplashModel(ApiService apiService) {
+        return new SplashModelImpl(mContext, apiService);
     }
 }

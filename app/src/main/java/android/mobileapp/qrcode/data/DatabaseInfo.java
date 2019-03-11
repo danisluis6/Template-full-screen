@@ -24,4 +24,9 @@ public class DatabaseInfo {
         public static final String COLUMN_CONTENT_DATE = "contentDate";
         public static final String COLUMN_CONTENT_USER_ID = "userID";
     }
+
+    public static class Configuration {
+        public static final String COLUMN_MININUM_VERSION = "android-min-version";
+        public static final String COLUMN_NEWEST_VERSION = "android-latest-version";
+    }
 }

@@ -8,12 +8,14 @@ import javax.inject.Inject;
 
 public class SessionManager {
 
-    private static final String TEMP = "temp";
-
     private static final String PREF_NAME = "qrcode_sharedPref";
     private static SessionManager instance;
     private final SharedPreferences pref;
     private final SharedPreferences.Editor editor;
+
+    private static final String MINIMUM_VERSION = "minimum version";
+    private static final String LATEST_VERSION = "latest version";
+    private static final String DATE_UPGRADE_APP = "date upgrade app";
 
     @Inject
     public SessionManager(Context context) {
@@ -29,17 +31,35 @@ public class SessionManager {
         return instance;
     }
 
-    public String getTemp() {
-        return pref.getString(TEMP, Constants.EMPTY_STRING);
+    public String getMinimumVersion() {
+        return pref.getString(MINIMUM_VERSION, Constants.EMPTY_STRING);
     }
 
-    public void setTemp(String temp) {
-        editor.putString(TEMP, temp);
+    public void setMinimumVersion(String minimumVersion) {
+        editor.putString(MINIMUM_VERSION, minimumVersion);
+        editor.apply();
+    }
+
+    public String getLatestVersion() {
+        return pref.getString(LATEST_VERSION, Constants.EMPTY_STRING);
+    }
+
+    public void setLatestVersion(String latestVersion) {
+        editor.putString(LATEST_VERSION, latestVersion);
+        editor.apply();
+    }
+
+    public long getDateUpgradeApp() {
+        return pref.getLong(DATE_UPGRADE_APP, 0);
+    }
+
+    public void setDateUpgradeApp(long time) {
+        editor.putLong(DATE_UPGRADE_APP, time);
         editor.apply();
     }
 
     public void clear() {
-        editor.remove(TEMP);
+        editor.remove(DATE_UPGRADE_APP);
         editor.apply();
     }
 }

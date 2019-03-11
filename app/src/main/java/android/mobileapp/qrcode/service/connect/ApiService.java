@@ -1,6 +1,6 @@
 package android.mobileapp.qrcode.service.connect;
 
-import android.mobileapp.qrcode.service.response.content.ContentResponse;
+import android.mobileapp.qrcode.service.response.configure.ConfigureResponse;
 
 import io.reactivex.Observable;
 import retrofit2.Response;
@@ -16,6 +16,6 @@ import retrofit2.http.GET;
 public interface ApiService {
 
     @GET("/v1/millionaire/mobile-app/configure")
-    Observable<Response<ContentResponse>> getAllContents();
+    Observable<Response<ConfigureResponse>> getConfigure();
 
 }

@@ -30,4 +30,7 @@ public class Constants {
 
 
     public static final String DIALOG_FRAGMENT_TAG_HISTORY = "History";
+
+    public static final String URL_APP_MARKET = "market://details?id=";
+    public static final String URL_APP_STORE = "https://play.google.com/store/apps/details?id=";
 }

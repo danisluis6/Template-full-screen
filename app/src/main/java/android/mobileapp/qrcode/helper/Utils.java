@@ -1,11 +1,17 @@
 package android.mobileapp.qrcode.helper;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.mobileapp.qrcode.data.storage.entities.Folder;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.zxing.BinaryBitmap;
@@ -41,6 +47,10 @@ public class Utils {
     }
 
     private static long sLastClickTime = 0;
+
+    public static boolean isEmptyString(String s) {
+        return TextUtils.equals(Constants.EMPTY_STRING, s);
+    }
 
     public static boolean isDoubleClick() {
         long clickTime = System.currentTimeMillis();
@@ -109,5 +119,38 @@ public class Utils {
             e.printStackTrace();
         }
         return -1;
+    }
+
+    public static String versionToComparable( String version )
+    {
+        String versionNum = version;
+        int at = version.indexOf( '-' );
+        if ( at >= 0 )
+            versionNum = version.substring( 0, at );
+        String[] numAr = versionNum.split( "\\." );
+        String versionFormatted = "0";
+        for ( String tmp : numAr ){
+            versionFormatted += String.format( "%4s", tmp ).replace(' ', '0');
+        }
+        while ( versionFormatted.length() < 12 )  {
+            versionFormatted += "0000";
+        }
+        return versionFormatted;
+    }
+
+    public static String getVersionName(Context context) {
+        try {
+            PackageInfo pInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+            return pInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return Constants.EMPTY_STRING;
+    }
+
+    @SuppressLint("MissingPermission")
+    public static boolean isInternetOn(Context context) {
+        final ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        return connectivityManager.getActiveNetworkInfo() != null && connectivityManager.getActiveNetworkInfo().isConnected();
     }
 }

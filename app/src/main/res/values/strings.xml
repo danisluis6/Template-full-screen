@@ -25,4 +25,13 @@
     <string name="enter_email_to">Email</string>
     <string name="enter_subject_to">Subject</string>
 
+    <string name="warning_upgrade_new_version">Một phiên bản mới của Triệu phú có sẵn. Vui lòng cập nhật lên phiên bản %1$s ngay bây giờ</string>
+
+    <string name="btn_update">Update</string>
+    <string name="btn_dismiss">Dismiss</string>
+    <string name="btn_retry">Retry</string>
+    <string name="btn_exit">Exit</string>
+
+    <string name="no_internet_connection">No Internet Access</string>
+
 </resources>
