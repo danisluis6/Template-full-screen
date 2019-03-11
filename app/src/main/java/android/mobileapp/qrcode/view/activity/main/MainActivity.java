@@ -281,6 +281,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
     protected void onResume() {
         super.onResume();
         delayedHide(0);
+        scannerView.resumeCameraPreview(this);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)

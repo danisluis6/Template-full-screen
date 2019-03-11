@@ -24,7 +24,7 @@
 
     <!-- Transparent Menu -->
     <color name="default_bmb_normal_color">#00afed44</color>
-    <color name="default_bmb_dot_color">#afed44</color>
+    <color name="default_bmb_dot_color">#FFF</color>
 
     <color name="default_bmb_highlighted_color">#00000000</color>
     <color name="default_bmb_unable_color">#00000000</color>
