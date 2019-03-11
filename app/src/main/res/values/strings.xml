@@ -3,7 +3,9 @@
 
     <string name="progress_dialog_waitting">Please wait…</string>
     <string name="error_save">Something went wrong</string>
+
     <string name="label_history">Scan History</string>
+    <string name="label_email">Create Email By QR Code</string>
 
     <string name="error_selecting_file">The selected file is not a valid file. Please select a valid file and try again.</string>
 
@@ -16,5 +18,11 @@
 
     <string name="delete_content_success">Delete successfully!</string>
     <string name="delete_content_failure">Something\'s went wrong!</string>
+
+    <string name="email_title_to">To</string>
+    <string name="email_title_subject">Subject</string>
+
+    <string name="enter_email_to">Email</string>
+    <string name="enter_subject_to">Subject</string>
 
 </resources>

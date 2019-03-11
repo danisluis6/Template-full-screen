@@ -7,7 +7,7 @@ import com.nightonke.boommenu.BoomButtons.SimpleCircleButton;
 public class BuilderManager {
 
     private static int[] imageResources = new int[]{
-            R.drawable.ic_qrcode,
+            R.drawable.ic_email_,
             R.drawable.bear,
             R.drawable.bee,
             R.drawable.butterfly,

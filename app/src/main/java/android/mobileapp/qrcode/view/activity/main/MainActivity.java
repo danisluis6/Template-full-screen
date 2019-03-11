@@ -23,6 +23,7 @@ import android.mobileapp.qrcode.helper.Utils;
 import android.mobileapp.qrcode.scan.R;
 import android.mobileapp.qrcode.view.BaseActivity;
 import android.mobileapp.qrcode.view.dialog.QRCodeDialog;
+import android.mobileapp.qrcode.view.dialog.QRGenerate;
 import android.mobileapp.qrcode.view.dialog.QRHistory;
 import android.mobileapp.qrcode.view.dialog.QRPDFView;
 import android.mobileapp.qrcode.view.dialog.QRWebView;
@@ -88,6 +89,9 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
 
     @Inject
     QRHistory mQRHistory;
+
+    @Inject
+    QRGenerate mQrGenerate;
 
     @Inject
     MainPresenter mMainPresenter;
@@ -158,6 +162,12 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         sbZoom = findViewById(R.id.sbZoom);
         mQrCodeDialog.setParentFragment(mContext, mActivity, mMainPresenter);
         mQRPDFView.setParentFragment(mContext, mActivity);
+        mQrGenerate.setParentFragment(mContext, mActivity, new QRGenerate.QRGenerateInterface() {
+            @Override
+            public void closeFrg() {
+                delayedHide(0);
+            }
+        });
         mQrCodeDialog.attachQRHistory(mQRHistory);
         mQrCodeDialog.attachQRWebview(mQrWebView, this);
         isFlashChecked = isCameraSwitch = true;
@@ -231,8 +241,15 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
             SimpleCircleButton.Builder builder = BuilderManager.getSimpleCircleButtonBuilder().listener(new OnBMClickListener() {
                 @Override
                 public void onBoomButtonClick(int index) {
-                    if (index == Config._OP_SCANNER_QR_CODE) {
-                        // TODO
+                    if (index == Config._OP_GENERATE_EMAIL) {
+                        new Handler().post(new Runnable() {
+                            public void run() {
+                                FragmentManager fm = mActivity.getSupportFragmentManager();
+                                mQrGenerate.show(fm, Constants.FRG_DIALOG_TAG.DIALOG_OP_EMAIL);
+                                FragmentTransaction ft = fm.beginTransaction();
+                                ft.commit();
+                            }
+                        });
                     } else if (index == Config._OP_GALLERY) {
                         // TODO
                     }

@@ -9,6 +9,7 @@ import android.mobileapp.qrcode.view.activity.main.MainPresenter;
 import android.mobileapp.qrcode.view.activity.main.MainPresenterImpl;
 import android.mobileapp.qrcode.view.activity.main.MainView;
 import android.mobileapp.qrcode.view.dialog.QRCodeDialog;
+import android.mobileapp.qrcode.view.dialog.QRGenerate;
 import android.mobileapp.qrcode.view.dialog.QRHistory;
 import android.mobileapp.qrcode.view.dialog.QRWebView;
 import android.mobileapp.qrcode.view.dialog.adapter.QRPDFViewFile;
@@ -68,6 +69,12 @@ public class MainModule {
     @Provides
     QRPDFViewFile provideQRPDFViewFile() {
         return new QRPDFViewFile();
+    }
+
+    @ActivityScope
+    @Provides
+    QRGenerate provideQRGenerate() {
+        return new QRGenerate();
     }
 
     @Provides

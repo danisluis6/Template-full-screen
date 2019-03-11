@@ -11,8 +11,11 @@ public class Constants {
     public static class FRG_DIALOG_TAG {
         public static String DIALOG_QRCODE = "Dialog QRCode";
         public static String DIALOG_QR_PDF = "Dialog QRPDF";
+
         public static String DIALOG_QRWEBVIEW = "Dialog QRWebView";
         public static String DIALOG_QRHISTORY = "Dialog QRHistory";
+
+        public static String DIALOG_OP_EMAIL = "Email Generate";
     }
 
     public final static int REQUEST_GALLERY = 4;
