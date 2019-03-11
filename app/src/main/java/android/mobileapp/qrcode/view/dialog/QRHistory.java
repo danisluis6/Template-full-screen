@@ -4,11 +4,12 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.mobileapp.qrcode.data.storage.entities.Content;
-import android.mobileapp.qrcode.helper.Constants;
+import android.mobileapp.qrcode.helper.AlertDialog;
 import android.mobileapp.qrcode.helper.QRProtocol;
 import android.mobileapp.qrcode.helper.RecyclerItemTouchHelper;
 import android.mobileapp.qrcode.scan.R;
 import android.mobileapp.qrcode.view.activity.main.MainActivity;
+import android.mobileapp.qrcode.view.activity.main.MainPresenter;
 import android.mobileapp.qrcode.view.dialog.adapter.HistoryAdapter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -31,9 +32,13 @@ public class QRHistory extends DialogFragment implements RecyclerItemTouchHelper
     private MainActivity mActivity;
     private Context mContext;
     private HistoryAdapter mHistoryAdapter;
-    private RecyclerView rcvHistory;
     private TextView tvTitleHistory;
     private ImageView imvClose;
+    private int mDeletedIndex;
+    private RecyclerView rcvHistory;
+    private AlertDialog mAlertDialogConfirm;
+    private Content mDeletedItem;
+    private MainPresenter mPresenter;
 
     @Inject
     public QRHistory() {
@@ -55,6 +60,13 @@ public class QRHistory extends DialogFragment implements RecyclerItemTouchHelper
                 mHistoryAdapter.updateQRHistory(contents);
             }
         }
+        return view;
+    }
+
+    private void initComponent(View view) {
+        rcvHistory = view.findViewById(R.id.rcvHistory);
+        tvTitleHistory = view.findViewById(R.id.tvTitleHistory);
+        tvTitleHistory.setText(getString(R.string.label_history));
         imvClose = view.findViewById(R.id.imvClose);
         imvClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,29 +74,49 @@ public class QRHistory extends DialogFragment implements RecyclerItemTouchHelper
                 dismiss();
             }
         });
-        return view;
-    }
 
-    private void initComponent(View view) {
-        rcvHistory = view.findViewById(R.id.rcvHistory);
-        tvTitleHistory = view.findViewById(R.id.tvTitleHistory);
+        rcvHistory.setHasFixedSize(true);
         rcvHistory.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        mHistoryAdapter = new HistoryAdapter(new ArrayList<Content>());
+        mHistoryAdapter = new HistoryAdapter(mContext, new ArrayList<Content>());
         rcvHistory.setAdapter(mHistoryAdapter);
-        ItemTouchHelper.SimpleCallback itemTouchHelper = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this, Constants.DIALOG_FRAGMENT_TAG_HISTORY);
+        ItemTouchHelper.SimpleCallback itemTouchHelper = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
         new ItemTouchHelper(itemTouchHelper).attachToRecyclerView(rcvHistory);
-        tvTitleHistory.setText(getString(R.string.label_history));
     }
 
-    public void setParentFragment(Context context, MainActivity activity) {
+    public void setParentFragment(Context context, MainActivity activity, MainPresenter presenter) {
         mActivity = activity;
         mContext = context;
+        mPresenter = presenter;
     }
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        if (viewHolder instanceof HistoryAdapter.MyViewHolder) {
-            // TODO
+        if (viewHolder instanceof HistoryAdapter.ViewHolder) {
+            mDeletedIndex = viewHolder.getAdapterPosition();
+            mDeletedItem = mHistoryAdapter.getGroupContents().get(viewHolder.getAdapterPosition());
+            mHistoryAdapter.remove(mDeletedIndex);
+
+            if (mAlertDialogConfirm == null) {
+                mAlertDialogConfirm = new AlertDialog().createDialog(getString(R.string.confirm_delete_messages), getString(R.string.btn_delete), getString(R.string.btn_cancel));
+                mAlertDialogConfirm.setOnPositiveListener(new AlertDialog.OnPositiveListener() {
+                    @Override
+                    public void onPositiveListener() {
+                        mPresenter.deleteContent(mDeletedItem);
+                    }
+                });
+                mAlertDialogConfirm.setOnNegativeListener(new AlertDialog.OnNegativeListener() {
+                    @Override
+                    public void onNegativeListener() {
+                        mHistoryAdapter.restore(mDeletedIndex, mDeletedItem);
+                        if (mDeletedIndex == 0) {
+                            rcvHistory.scrollToPosition(mDeletedIndex);
+                        }
+                    }
+                });
+            }
+            if (!mAlertDialogConfirm.isAdded()) {
+                mAlertDialogConfirm.show(mActivity.getSupportFragmentManager(), QRProtocol.QR_CONFIRM);
+            }
         }
     }
 }

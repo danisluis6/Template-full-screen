@@ -8,4 +8,6 @@ public interface MainModel {
     void saveContent(Content content);
 
     void getAllHistory();
+
+    void deleteContent(Content content);
 }

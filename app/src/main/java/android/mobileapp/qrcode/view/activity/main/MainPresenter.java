@@ -9,9 +9,13 @@ public interface MainPresenter {
 
     void saveContentFailure(String string);
 
-    void saveContentSuccess(Content content);
-
     void getAllHistory();
 
     void getContentSuccess(List<Content> contents);
+
+    void deleteContent(Content mDeletedItem);
+
+    void deleteContentSuccess(String messasge);
+
+    void deleteContentFailure(String message);
 }

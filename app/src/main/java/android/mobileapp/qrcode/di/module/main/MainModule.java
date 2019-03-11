@@ -43,7 +43,7 @@ public class MainModule {
     @ActivityScope
     @Provides
     MainPresenter provideMainPresenter(Context context, MainActivity activity, MainModel mainModel) {
-        return new MainPresenterImpl(mMainView, mainModel);
+        return new MainPresenterImpl(context,activity, mMainView, mainModel);
     }
 
     @ActivityScope

@@ -15,6 +15,7 @@ import android.mobileapp.qrcode.helper.Utils;
 import android.mobileapp.qrcode.scan.OverrideFonts;
 import android.mobileapp.qrcode.scan.R;
 import android.mobileapp.qrcode.view.activity.main.MainActivity;
+import android.mobileapp.qrcode.view.activity.main.MainPresenter;
 import android.mobileapp.qrcode.view.activity.main.MainView;
 import android.net.Uri;
 import android.os.Bundle;
@@ -59,6 +60,7 @@ public class QRCodeDialog extends DialogFragment implements View.OnClickListener
     private QRHistory mQrHistory;
 
     private MainView mMainView;
+    private MainPresenter mPresenter;
 
     @Inject
     public QRCodeDialog() {
@@ -110,9 +112,10 @@ public class QRCodeDialog extends DialogFragment implements View.OnClickListener
         tvTitle.setTypeface(OverrideFonts.getTypeFace(mContext, OverrideFonts.TYPE_FONT_NAME.HELVETICANEUE, OverrideFonts.TYPE_STYLE.LIGHT));
     }
 
-    public void setParentFragment(Context context, MainActivity activity) {
+    public void setParentFragment(Context context, MainActivity activity, MainPresenter mMainPresenter) {
         mActivity = activity;
         mContext = context;
+        mPresenter = mMainPresenter;
     }
 
     public void attachQRWebview(QRWebView qrWebView, MainView mainView) {
@@ -123,7 +126,7 @@ public class QRCodeDialog extends DialogFragment implements View.OnClickListener
 
     public void attachQRHistory(QRHistory qRHistory) {
         mQrHistory = qRHistory;
-        mQrHistory.setParentFragment(mContext, mActivity);
+        mQrHistory.setParentFragment(mContext, mActivity, mPresenter);
     }
 
     public void loadContents(List<Content> arrContents) {

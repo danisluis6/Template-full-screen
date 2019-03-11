@@ -156,7 +156,7 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
         imvRefresh = findViewById(R.id.imvRefresh);
         imvStorage = findViewById(R.id.imvStorage);
         sbZoom = findViewById(R.id.sbZoom);
-        mQrCodeDialog.setParentFragment(mContext, mActivity);
+        mQrCodeDialog.setParentFragment(mContext, mActivity, mMainPresenter);
         mQRPDFView.setParentFragment(mContext, mActivity);
         mQrCodeDialog.attachQRHistory(mQRHistory);
         mQrCodeDialog.attachQRWebview(mQrWebView, this);
@@ -394,16 +394,21 @@ public class MainActivity extends BaseActivity implements ZXingScannerView.Resul
 
     @Override
     public void showDialogProgress() {
-        if (pgDialog != null && !pgDialog.isShowing()) {
-            pgDialog.setTitle(null);
-            pgDialog.setCanceledOnTouchOutside(false);
-            pgDialog.setMessage(mContext.getResources().getString(R.string.progress_dialog_waitting));
-            try {
-                pgDialog.show();
-            } catch (Exception exception) {
-                exception.printStackTrace();
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (pgDialog != null && !pgDialog.isShowing()) {
+                    pgDialog.setTitle(null);
+                    pgDialog.setCanceledOnTouchOutside(false);
+                    pgDialog.setMessage(mContext.getResources().getString(R.string.progress_dialog_waitting));
+                    try {
+                        pgDialog.show();
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
             }
-        }
+        });
     }
 
     @Override

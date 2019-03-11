@@ -21,13 +21,11 @@ public class MainModelImpl implements MainModel {
     private ApiService mApiService;
     private ContentDAO mContentDAO;
     private MainPresenter mMainPresenter;
-    private DisposableManager mDisposableManager;
 
-    public MainModelImpl(Context context, ApiService apiService, ContentDAO contentDAO, DisposableManager disposableManager) {
+    public MainModelImpl(Context context, ApiService apiService, ContentDAO contentDAO) {
         mContext = context;
         mApiService = apiService;
         mContentDAO = contentDAO;
-        mDisposableManager = disposableManager;
     }
 
     @Override
@@ -67,5 +65,22 @@ public class MainModelImpl implements MainModel {
                 return null;
             }
         }.execute();
+    }
+
+    @SuppressLint("StaticFieldLeak")
+    @Override
+    public void deleteContent(final Content content) {
+        AsyncTask.execute(new Runnable() {
+
+            @SuppressLint("StaticFieldLeak")
+            @Override
+            public void run() {
+                if(mContentDAO.deleteItems(content) > 0) {
+                    mMainPresenter.deleteContentSuccess(mContext.getString(R.string.delete_content_success));
+                } else {
+                    mMainPresenter.deleteContentFailure(mContext.getString(R.string.delete_content_failure));
+                }
+            }
+        });
     }
 }

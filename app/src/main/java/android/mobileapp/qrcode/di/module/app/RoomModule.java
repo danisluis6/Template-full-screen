@@ -52,7 +52,7 @@ public class RoomModule {
 
     @Singleton
     @Provides
-    MainModel provideMainModel(ApiService apiService, ContentDAO contentDAO, DisposableManager disposableManager) {
-        return new MainModelImpl(mContext, apiService, contentDAO, disposableManager);
+    MainModel provideMainModel(ApiService apiService, ContentDAO contentDAO) {
+        return new MainModelImpl(mContext, apiService, contentDAO);
     }
 }

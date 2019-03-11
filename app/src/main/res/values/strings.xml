@@ -9,4 +9,12 @@
 
     <string name="pageCount">Page %1$d of %2$d</string>
     <string name="file_invalid">No file uploaded or invalid file type!</string>
+
+    <string name="confirm_delete_messages">Are you sure to delete the row?</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_delete">Delete</string>
+
+    <string name="delete_content_success">Delete successfully!</string>
+    <string name="delete_content_failure">Something\'s went wrong!</string>
+
 </resources>

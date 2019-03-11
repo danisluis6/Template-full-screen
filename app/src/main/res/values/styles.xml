@@ -28,4 +28,26 @@
         <item name="colorControlHighlight">@color/colorPrimary</item>
     </style>
 
+    <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:typeface">monospace</item>
+        <item name="windowActionBar">false</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionMenuTextColor">@android:color/white</item>
+        <item name="android:windowBackground">@android:color/white</item>
+    </style>
+
+    <style name="FontTheme" parent="AppTheme.NoActionBar">
+        <item name="android:textViewStyle">@style/FontStyleTextView</item>
+        <item name="android:editTextStyle">@style/FontStyleEditText</item>
+    </style>
+
+    <style name="FontStyleTextView" parent="android:Widget.TextView">
+        <item name="android:typeface">monospace</item>
+    </style>
+
+    <style name="FontStyleEditText" parent="android:Widget.EditText">
+        <item name="android:typeface">monospace</item>
+    </style>
+
 </resources>

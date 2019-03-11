@@ -4,14 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="55dp"
     android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/view_background"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#ff0011">
+        android:layout_height="match_parent"
+        android:background="@color/bg_color">
 
         <ImageView
             android:id="@+id/delete_icon"
@@ -21,14 +20,14 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="10dp"
             android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_exit" />
+            android:src="@drawable/ic_trash" />
 
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/view_foreground"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="#fff"
         android:orientation="vertical">
 
@@ -63,17 +62,6 @@
                 android:textColor="@android:color/black"
                 android:textSize="14sp"
                 app:layout_constraintLeft_toRightOf="@+id/tvConcrete" />
-
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="10dp"
-            android:background="#FFFFFF"
-            androd:ignore="NotSibling"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/layer1" />
     </LinearLayout>
 </FrameLayout>
