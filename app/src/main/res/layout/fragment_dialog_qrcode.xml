@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bg_color"
+    android:fitsSystemWindows="true"
+    android:minWidth="320dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/black"
+        android:gravity="center"
+        android:paddingBottom="7dp"
+        android:paddingTop="7dp"
+        android:text="@string/qr_dialog_title"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="14sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#E6F0F6"
+        android:gravity="center_vertical"
+        android:paddingBottom="7dp"
+        android:paddingTop="7dp">
+
+        <ImageView
+            android:id="@+id/imvQRCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_qr_code" />
+
+        <ImageView
+            android:id="@+id/imvSearch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_search" />
+
+        <ImageView
+            android:id="@+id/imvLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_link" />
+
+        <ImageView
+            android:id="@+id/imvHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_history" />
+
+        <ImageView
+            android:id="@+id/imvSave"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_save" />
+
+        <ImageView
+            android:id="@+id/imvCopy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_copy" />
+
+        <ImageView
+            android:id="@+id/imvShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_share" />
+
+        <ImageView
+            android:id="@+id/imvEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_email" />
+
+        <ImageView
+            android:id="@+id/imvExit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_exit" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvContentData"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:paddingBottom="7dp"
+        android:paddingTop="7dp"
+        android:textAlignment="center"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:id="@+id/imvGenerateBitmap"
+        android:layout_gravity="center|center_vertical"
+        android:scaleType="fitCenter"
+        android:layout_marginBottom="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

@@ -9,10 +9,12 @@ import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
+import java.util.logging.Handler;
+
 public class ViewFinderView extends View implements IViewFinder {
-    private static final String TAG = "ViewFinderView";
 
     private Rect mFramingRect;
 
@@ -28,7 +30,7 @@ public class ViewFinderView extends View implements IViewFinder {
     private static final int[] SCANNER_ALPHA = {0, 64, 128, 192, 255, 192, 128, 64};
     private int scannerAlpha;
     private static final int POINT_SIZE = 10;
-    private static final long ANIMATION_DELAY = 80l;
+    private static final long ANIMATION_DELAY = 200l;
 
     private final int mDefaultLaserColor = getResources().getColor(R.color.viewfinder_laser);
     private final int mDefaultMaskColor = getResources().getColor(R.color.viewfinder_mask);
@@ -129,7 +131,6 @@ public class ViewFinderView extends View implements IViewFinder {
         mViewFinderOffset = offset;
     }
 
-    // TODO: Need a better way to configure this. Revisit when working on 2.0
     @Override
     public void setSquareViewFinder(boolean set) {
         mSquareViewFinder = set;
@@ -204,8 +205,14 @@ public class ViewFinderView extends View implements IViewFinder {
         // Draw a red "laser scanner" line through the middle to show decoding is active
         mLaserPaint.setAlpha(SCANNER_ALPHA[scannerAlpha]);
         scannerAlpha = (scannerAlpha + 1) % SCANNER_ALPHA.length;
-        int middle = framingRect.height() / 2 + framingRect.top;
-        canvas.drawRect(framingRect.left + 2, middle - 1, framingRect.right - 1, middle + 2, mLaserPaint);
+        int middleHor = framingRect.height() / 2 + framingRect.top;
+        int middleVer = framingRect.width()/2 + framingRect.left;
+
+        float horizontalLine = (framingRect.right - framingRect.left)/2.0f;
+        float verticalLine = (framingRect.bottom - framingRect.top)/2.0f;
+
+        canvas.drawRect(framingRect.left + horizontalLine / 1.5f + 2, middleHor - 1, framingRect.right - horizontalLine / 1.5f - 1, middleHor + 2, mLaserPaint);
+        canvas.drawRect(middleVer - 1, framingRect.top + verticalLine / 1.5f + 2, middleVer + 2, framingRect.bottom - verticalLine / 1.5f - 1, mLaserPaint);
 
         postInvalidateDelayed(ANIMATION_DELAY,
                 framingRect.left - POINT_SIZE,

@@ -1,14 +1,46 @@
 package android.mobileapp.qrcode.app;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.mobileapp.qrcode.di.component.AppComponent;
+import android.mobileapp.qrcode.di.component.DaggerAppComponent;
+import android.mobileapp.qrcode.di.module.app.AppModule;
+import android.mobileapp.qrcode.di.module.app.RoomModule;
+import android.mobileapp.qrcode.service.connect.FactoryModule;
 import android.os.Bundle;
 
 public class Application extends android.app.Application {
 
+    private Context mContext;
+    private static Application sInstance;
+    private AppComponent mApplicationComponent;
+
+    public static synchronized Application getInstance() {
+        if (sInstance == null) {
+            sInstance = new Application();
+        }
+        return sInstance;
+    }
+
+    private void initAppComponent() {
+        mApplicationComponent = DaggerAppComponent.builder()
+                .appModule(new AppModule(this,mContext))
+                .roomModule(new RoomModule(this, mContext))
+                .factoryModule(new FactoryModule(this, mContext))
+                .build();
+    }
+
+    public AppComponent getAppComponent() {
+        return mApplicationComponent;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
+        mContext = this;
+        sInstance = this;
+        initAppComponent();
         registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
             @Override
             public void onActivityCreated(Activity activity, Bundle savedInstanceState) {

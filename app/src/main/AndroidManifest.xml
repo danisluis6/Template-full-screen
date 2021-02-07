@@ -3,7 +3,14 @@
     package="android.mobileapp.qrcode.scan">
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FLASHLIGHT"/>
 
     <application
         android:name="android.mobileapp.qrcode.app.Application"
@@ -14,17 +21,22 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
-            android:name="android.mobileapp.qrcode.scan.MainActivity"
+            android:name="android.mobileapp.qrcode.view.activity.main.MainActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/app_name"
             android:theme="@style/FullscreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.mobileapp.qrcode.view.activity.main.MainActivity" />
+            </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

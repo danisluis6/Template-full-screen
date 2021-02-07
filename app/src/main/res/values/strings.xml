@@ -1,6 +1,9 @@
 <resources>
-    <string name="app_name">QR &amp; Barcode Scanner</string>
+    <string name="qr_dialog_title">Scanner Result</string>
 
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="progress_dialog_waitting">Please wait…</string>
+    <string name="error_save">Something went wrong</string>
+    <string name="label_history">Scan History</string>
+
+    <string name="error_selecting_file">The selected file is not a valid file. Please select a valid file and try again.</string>
 </resources>

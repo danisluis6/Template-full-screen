@@ -1,16 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <me.dm7.barcodescanner.zxing.ZXingScannerView
-        android:id="@+id/zXingScannerView"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <me.dm7.barcodescanner.zxing.ZXingScannerView
+                android:id="@+id/zXingScannerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/imvFlash"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"/>
+
+    <ImageView
+        android:id="@+id/imvRefresh"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="wrap_content"
+        android:src="@drawable/ic_refresh"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@+id/imvFlash"/>
+
+    <ImageView
+        android:id="@+id/imvStorage"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="wrap_content"
+        android:src="@drawable/ic_storage"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <ImageView
+        android:id="@+id/imvGallery"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="wrap_content"
+        android:src="@drawable/ic_gallery"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/imvStorage"/>
+
+    <ImageView
+        android:id="@+id/imvCamera"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toLeftOf="@+id/imvGallery"/>
+
+    <com.nightonke.boommenu.BoomMenuButton
+        android:id="@+id/bottomMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <SeekBar
+        android:id="@+id/sbZoom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:thumbTint="@color/thumb"
+        android:progressTint="@color/thumb"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottomMenu"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        tools:ignore="UnusedAttribute" />
 
 </android.support.constraint.ConstraintLayout>
